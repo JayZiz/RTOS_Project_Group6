@@ -1,5 +1,5 @@
 
-# Traffic light corridor systems
+# Traffic light corridor system
 
 Group Members:
 Jaime Zizman
