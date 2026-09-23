@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulink Requirement Traceability Matrix Snapshot</title>
+
+<style>
+table.slreqrtmxTable th.slreqrtmxColHeader:not(:first-child) {
+    background-size: 5px 5px;
+    border: 1px solid grey;
+    min-width: 20px;
+}
+
+.slreqrtmxTable td {
+    text-overflow: ellipsis;
+    border: 1px solid grey;
+}
+
+table.slreqrtmxTable tr.slreqrtmxColHeaderRow {
+    position: relative;
+    vertical-align: bottom;
+    padding: 0;
+    font-size: 12px;
+    height: 200px;
+}
+
+table.slreqrtmxTable th.slreqrtmxColHeader>div {
+    position: relative;
+    top: 0px;
+    height: 230px;
+    border-left: 0px solid #dddddd;
+    border-right: 0px solid #dddddd;
+    border-top: 0px solid #dddddd;
+    border-bottom: 0px solid #dddddd;
+    text-overflow: ellipsis;
+    over-flow: auto;
+}
+
+table.slreqrtmxTable th {
+    background-color: rgb(233, 233, 233);
+    border-bottom: 1px solid #dddddd !important;
+    
+}
+
+
+table.slreqrtmxTable td {
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    max-height: 20px;
+}
+
+table.slreqrtmxTable th.slreqrtmxRowHeader {
+    text-align: left;
+    border: 1px solid grey;
+    width: 200px;
+}
+
+.expandedNode {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAhklEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAUewFgACi2ACAAGLBKcGCafafP/8wxAACCKcB2BRjAwABRLEXAAKIYgMAAoiFmKjCBwACiJHSzAQQQBR7ASCAKDYAIMAAUtQUow+YsTsAAAAASUVORK5CYII=");
+    width: 16px;
+    height: 16px;
+    opacity: 0.3;
+}
+
+.collapsedNode {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAkUlEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAEfQCCwt+JQABRHEYAAQQCzE2w9h//vzDUAcQQDgNgCkGacamEQYAAohiLwAEEEED8NkOAgABxEJMVOEDAAHESGlmAgggisMAIIAoNgAgwAC+/BqtC+40NQAAAABJRU5ErkJggg==");
+    width: 16px;
+    height: 16px;
+    opacity: 0.3;
+}
+
+
+table.slreqrtmxTable th.slreqrtmxColHeader span {
+    transform: translate(-70px, -100px) rotate(270deg);
+    -webkit-transform: translate(-70px, -100px) rotate(270deg);
+    -moz-transform: translate(-70px, -100px) rotate(270deg);
+    position: absolute;
+    bottom: 16px;
+    left: -20px;
+    display: inline-block;
+    width: 200px;
+    text-align: left;
+    white-space: nowrap;
+    /*whether to display in one line or not*/
+    text-overflow: ellipsis;
+}
+
+
+/* cell style */
+.slreqrtmxTable td.changedLinkCell {
+    background-color: rgb(255, 182, 193);
+}
+
+.slreqrtmxTable th.withChangedLink {
+    background-color: rgb(255, 182, 193);
+
+}
+
+.slreqrtmxTable td.withChangedLink {
+    background-color: rgb(255, 182, 193) !important;
+
+}
+
+td.cellWithFilteredColOrRow img {
+    opacity: 0.3;
+}
+
+th.withMissingLink {
+    background-color: rgb(240,230,140) !important;
+}
+
+th.withMissingLink {
+    background-color: rgb(240,230,140) !important;
+}
+
+th.filteredColumn {
+    color: grey !important;
+    font-style: italic !important;
+}
+
+.filteredRow {
+    color: grey !important;
+    font-style: italic !important;
+}
+
+.parentNode {
+    display: inline-block;
+    margin-left: -18px;
+}
+
+
+.leafNode {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-left: -18px;
+}
+
+.slreqrtmxColHeaderRow:first-child {
+    vertical-align: bottom;
+}
+
+.rowHeaderIndent0 {
+    padding-left: 15px;
+}
+
+
+.colHeaderIndent1 {
+    padding-left: 15px;
+    padding-bottom: 15px;
+}
+
+.rowHeaderIndent1 {
+    padding-left: 30px;
+}
+
+.colHeaderIndent2 {
+    padding-left: 30px;
+    padding-bottom: 30px;
+}
+
+.rowHeaderIndent2 {
+    padding-left: 45px;
+}
+
+.colHeaderIndent3 {
+    padding-left: 45px;
+    padding-bottom: 45px;
+}
+
+.rowHeaderIndent3 {
+    padding-left: 60px;
+}
+
+.colHeaderIndent4 {
+    padding-left: 60px;
+    padding-bottom: 60px;
+}
+
+.rowHeaderIndent4 {
+    padding-left: 75px;
+}
+
+.colHeaderIndent5 {
+    padding-left: 75px;
+    padding-bottom: 75px;
+}
+
+.rowHeaderIndent5 {
+    padding-left: 90px;
+}
+
+div.InLinkCell::before {
+    padding-left: 4px;
+    outline: none;
+    font-size: 18px;
+    color: lightslategrey;
+    width: 12px;
+    height: 12px;
+    padding-top: 4px;
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsSAAALEgHS3X78AAAAZUlEQVQoka2Q0Q2AIAxE3zmBIziKIzGKIzmKm9SAfJSAsSRech9c+3IpMjOikmRLeLvqP0BS6sKsfIM3sAPXM+pmzWMDzhJWDwFgBQ6/+AWU+gnHG0rLzA0N4MDXXxoCDkxdbsYNXZnAVKn4O6MAAAAASUVORK5CYII=");    
+    
+}
+
+div.OutLinkCell::before {
+    padding-left: 4px;
+    outline: none;
+    font-size: 18px;
+    color: lightslategrey;
+    width: 12px;
+    height: 12px;
+    padding-top: 4px;
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsSAAALEgHS3X78AAAAZ0lEQVQokbWO0QnAIAwFL6UDdARH6UiO4kiO4iYpAQWxCfangUcC7w6CqroBLqDZnnsX7kIB7ChbAUgdHkk7oS5CDQXgXuCROxKaA1vaSwCyA87J0kF3RKxWmcsjpIP5Xzjtz8808AB0la1sGryCNAAAAABJRU5ErkJggg==");
+}
+
+
+td.cellWithFilteredColOrRow img {
+    opacity: 0.3;
+}
+
+th.filteredColumn {
+    color: grey !important;
+    font-style: italic !important;
+}
+
+.filteredRow {
+    color: grey !important;
+    font-style: italic !important;
+}
+
+div.HasLinkInside::before {
+    padding-left: 4px;
+    outline: none;
+    font-size: 18px;
+    color: lightslategrey;
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsSAAALEgHS3X78AAAA/klEQVQokWP8//8/Awi4V86y+ffy9oK/z64p/f/5jZEBAj4yMDBsYGBgaNi/f/8DkAhYg3vZtPDfl7YuZ2TnZWSziWdg4pdg+La8yJGBgUEBpJiBgUGAgYHBYf/+/RcY3Spm2vw+v/EQi6otI7tLNgMjOw/Y6E0ejGBbHB0dQYonMDAwBDAwMBgwgZwBMhlZMTLYv3//BwYGhgIGBgYQ3cAEcjPIGdgUwwBUE8hpAUwgD4LcTAQAeZqfiRiVyICJkZ3r/7+PL4hRCwqxj0zMUlr3fh1ZyPD/5xecKqEhBfLDBiYmcdWE/z8///+5ZypWTUjBCtZEesSRlDQYGBgAd3d66PgAYpcAAAAASUVORK5CYII=");
+}
+
+table.slreqrtmxInfoTable{
+    width: 400 !important;
+}
+
+.slreqrtmxInfoHeader{
+    width: 20% !important;
+
+}
+
+
+th.slreqrtmxColHeader .cellTooltipContent {
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+}
+
+th:hover .cellTooltipContent, td:hover .cellTooltipContent {
+    visibility: visible;
+}
+
+
+/*info panel*/
+
+table.slreqrtmxInfoTable {
+    border: 1;
+    border: 1px solid black;
+ 
+}
+
+th.slreqrtmxInfoHeader{
+    width: 30%;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: left !important;
+    border: 1px solid black;
+}
+
+td.slreqrtmxInfoContent{
+    width: 80%;
+    padding-right: 10px;
+    padding-left: 10px;
+    text-align: left;
+    border: 1px solid black;
+    word-break:break-all;
+}
+
+
+th.slreqrtmxColHeader th.slreqrtmxInfoHeader span{
+    transform: translate(150px, -15px) !important;
+    -moz-transform: translate(150px, -15px) !important;
+    -webkit-transform: translate(150px, -15px) !important;
+
+
+}
+
+td.slreqrtmxInfoContent span{
+    transform: translate(150px, -15px) !important;
+    -moz-transform: translate(150px, -15px) !important;
+    -webkit-transform: translate(150px, -15px) !important;
+}
+
+
+/*config panel*/
+
+/* layout */
+
+div.slreqrtmx {
+    display: grid;
+    padding: 3px;
+    grid-gap: 3px;
+    width: 96vw;
+    height: 95vh;
+    grid-template: 
+           "nav article" min-content
+            "aside article" 1fr
+        / min-content 1fr;
+}
+
+nav.config-col{
+  grid-area: nav;
+  overflow-y: scroll;
+  max-width: 50vw;
+  min-width: 10vw;
+  max-height: 95vh;
+  min-height: 95vh;
+  resize: horizontal;
+}
+
+
+article.table-col{
+  overflow-x: scroll;
+  overflow-y: scroll;
+  grid-area: article;
+  min-width: 47vw;
+  max-width: 96vw;
+  max-height: 95vh;
+  min-height: 95vh;
+}
+
+
+table.slreqrtmxTable {
+  position: relative;
+}
+
+
+table.slreqrtmxTable th.slreqrtmxColHeader{
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+ }
+
+table.slreqrtmxTable th.slreqrtmxColHeader:first-child {
+   position: sticky;
+   position: -webkit-sticky;
+   left: 0;
+   top: 0;
+   z-index: 99;
+}
+
+table.slreqrtmxTable th.slreqrtmxRowHeader {
+    position: sticky;
+    position: -webkit-sticky;
+    left: 0;
+}
+
+
+table.slreqrtmxConfigTable{
+    border: 2px solid black;
+    border-collapse: collapse;
+    text-align: left;
+    table-layout: fixed;
+    width: 100%;
+    overflow-wrap: break-word;
+    position: relative;
+}
+
+th.slreqrtmxConfigNameCell{
+    border: 2px solid black;
+    padding-left: 16px;
+    background-color: rgb(233, 233, 233);
+}
+
+td.slreqrtmxConfigValueCell{
+    border: 2px solid black;
+    padding-left: 8px;
+}
+
+th.slreqrtmxConfigNameHeader{
+    border: 2px solid black;
+    padding-left: 4px;
+}
+
+
+td.HighlightHasChangedLink{
+    background-color: rgb(255, 182, 193) !important;   
+}
+
+td.HighlightHasNoLink{
+    background-color: rgb(240,230,140) !important;
+}
+
+#hide_show_config-col {
+    cursor: pointer;
+    bottom: 15px;
+    position: fixed;
+    z-index: 99;
+    color: darkgrey;
+}
+
+th.rowHeaderResize {
+    cursor: col-resize;
+}
+
+th.colHeaderResize {
+    cursor: row-resize;
+}
+
+th.bothHeaderResize{
+    cursor: nwse-resize;
+}
+
+.colHeaderResizeLine {
+    position: absolute;
+    background-color: black;
+    height: 1px;
+    z-index: 99;
+}
+
+
+.rowHeaderResizeLine {
+    position: absolute;
+    background-color: black;
+    width: 1px;
+    z-index: 99;
+    height: 95vh;
+}
+
+</style>
+</head>
+<body>
+
+
+<div class="slreqrtmx"><aside id="hide_show_config-col">◀</aside><nav class="config-col"><h2>Filter Status</h2><table class="slreqrtmxConfigTable"><tr class="slreqrtmxConfigNameRow"><th class="slreqrtmxConfigNameHeader" colspan="2">Top:</th></tr><tr class="slreqrtmxConfigDetailRow"><th class="slreqrtmxConfigNameCell">Focused Scope:</th><td class="slreqrtmxConfigValueCell Focused Scope">C:\Users\jaime\OneDrive\Documents\GitHub\RTOS_Project_Group6\00_SystemsEngineering\02_SYSRS.slreqx</td></tr><tr class="slreqrtmxConfigNameRow"><th class="slreqrtmxConfigNameHeader" colspan="2">Left:</th></tr><tr class="slreqrtmxConfigDetailRow"><th class="slreqrtmxConfigNameCell">Focused Scope:</th><td class="slreqrtmxConfigValueCell Focused Scope">C:\Users\jaime\OneDrive\Documents\GitHub\RTOS_Project_Group6\00_SystemsEngineering\01_CRS.slreqx</td></tr><tr class="slreqrtmxConfigDetailRow"><th class="slreqrtmxConfigNameCell">Type:</th><td class="slreqrtmxConfigValueCell Type">Functional</td></tr></table></nav><article class="table-col"><table class="slreqrtmxTable"><tr class="slreqrtmxColHeaderRow"><th class="slreqrtmxColHeader tableFirstCell"></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent0 columnHeaderContent"><div class="parentNode expandedNode" docid="1" fullid="C:\Users\jaime\OneDrive\Documents\GitHub\RTOS_Project_Group6\00_SystemsEngineering\02_SYSRS.slreqx" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQCAYAAADNo/U5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADnSURBVDhPjZHBEcMgDATpJ09qoQXqcBu04Fr4uh5yK3weO3YmuRlFQmglmaS2ttHXPn75vvVhJRKIy2/yncGYhNqy+wfYjYGwvyBymNc9oLrU8IY/5S+6QC7O8n2LMDRjIfLEt0nEuSi5dJ0Fx40EsJ8mdFqHQqCs3fG11MMCYZJqLhBKKkgA6uhJQIiXu01CTDj/kazlSQExya/2pJbSaK8sk1dMg9t67u/Xo7jTdAHMkWdIOj7SSADzraqgUVRcUsTx5AF5PSVib36J6arCs10moZijJPJD4KPR3oQz9QH9ZZowfR1vtaaYVxz3kBkAAAAASUVORK5CYII=" width="16px" height="16px"> 02_SYSRS</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="parentNode expandedNode" docid="1" fullid="02_SYSRS:#29" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must model a real Melbourne...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must include standar...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must include right‑t...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must include pedestr...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must have it own loc...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must detect vehicle ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must detect vehicle ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Each intersection must detect pedestri...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Intersection traffic‑light behaviour m...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Intersection traffic‑light behaviour m...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="parentNode expandedNode" docid="1" fullid="02_SYSRS:#5" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must include a train crossi...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The train crossing must have its own c...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must detect approaching tra...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train detection must trigger boom‑gate...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train‑crossing behaviour must operate ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="parentNode collapsedNode" docid="1" fullid="02_SYSRS:#33" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train must not be allowed to cross in ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must coordinate intersectio...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="parentNode expandedNode" docid="1" fullid="02_SYSRS:#36" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The control room must display current ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must include a central cont...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Cental control shall not have control ...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent2 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The central control node must have ove...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="parentNode collapsedNode" docid="1" fullid="02_SYSRS:#18" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must operate across multipl...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must support any suitable o...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must meet real‑time respons...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must include moderate fault...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must support node restart b...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The system must ensure the corridor re...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="rtmxLeafNode"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> The project must include a comprehensi...</span></div></th><th class="slreqrtmxColHeader dojoDndItem"><div class="dojoxGridSortNode"><span class="colHeaderIndent1 columnHeaderContent"><div class="parentNode collapsedNode" docid="1" fullid="02_SYSRS:#30" onclick="onClickParentNodeIconCallBack(this);"></div><img class="colHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAkFBMVEVMaXFbW11iYmRpaWyoqq2vsbSho6ZUVFZUVFavsbRwcHOanJ6TlJdNTU9+f4FNTU+FhomanJ6FhomMjZCho6ZiYmRpaWyTlJeoqq1bW113eHpwcHN+f4H///9UVFavsbT39/fU1dbS0tOWl5nPz9C8vL7AwcPX19iRkZO+vr+FhYiLi43v7/DKysvV1dbMzc1bL877AAAAEXRSTlMAoKBAkECQsECwsECwIBAwIBN5ru4AAAAJcEhZcwAACxIAAAsSAdLdfvwAAACLSURBVBjTbc/XDsMgDAVQZ88OOkgLuCWje/3/39UEiPrQ8wDcKyHZAP8kxZEUic/xzoltTjeT1OSKeWfGKirqxrngqampWDsttnRSsbI67My1BFCqf/ZqwEEZcwAhrlq/8SNG9KWU8qHxJUclFRHn/H7jVmQGCbeT0I4a7J3AL5NnB5LlvwvPFu7xBfWTD2K3016uAAAAAElFTkSuQmCC" width="16px" height="16px"> Justifications</span></div></th></tr><tr><th class="slreqrtmxRowHeader  filteredColumn"><div><span><span class="rowHeaderIndent0 rowHeaderContent"><div class="parentNode expandedNode"></div><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQCAYAAADNo/U5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADnSURBVDhPjZHBEcMgDATpJ09qoQXqcBu04Fr4uh5yK3weO3YmuRlFQmglmaS2ttHXPn75vvVhJRKIy2/yncGYhNqy+wfYjYGwvyBymNc9oLrU8IY/5S+6QC7O8n2LMDRjIfLEt0nEuSi5dJ0Fx40EsJ8mdFqHQqCs3fG11MMCYZJqLhBKKkgA6uhJQIiXu01CTDj/kazlSQExya/2pJbSaK8sk1dMg9t67u/Xo7jTdAHMkWdIOj7SSADzraqgUVRcUsTx5AF5PSVib36J6arCs10moZijJPJD4KPR3oQz9QH9ZZowfR1vtaaYVxz3kBkAAAAASUVORK5CYII=" width="16px" height="16px"> 01_CRS</span></span></div></th><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td><td class="slreqrtmxCellContent cellWithFilteredColOrRow"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Intersection traffic</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Pedestrian crossing</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Traffic flow</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train boom and lights</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Traffic light-&gt;train sensing</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train stop if issue</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Local controller</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Central Controller</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="HasLinkInside"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Intrersection controllers</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="HasLinkInside"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> TL Red if train</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> ped button + light</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Central control room</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Local-&gt;Central controller communication</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="HasLinkInside"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Central controller does not control individual lights </span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Train line controller</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Modelling your design on a real intersection</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Possible light sequence patterns</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Central controller operation</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Override commands</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Simulation</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Interacting with system for demonstration examples</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr><tr><th class="slreqrtmxRowHeader "><div><span><span class="rowHeaderIndent1"><img class="rowHeaderIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsSAAALEgHS3X78AAAAwUlEQVQ4y8XTsQrCMBAG4L/i+zkJClIqli4dHBSkgpNgEVwcuoR2EQefr6RNj6Sti4PB2EY6eFsufz5ykDht22JIjTCwBgPj9wVjzGqeIAgcI/Da7DzMGPt+AwComwZZmmq9le/bjQAAUtVwveVHzwrgnIOkwuN+M4ZnCxec825AkMRkOjcCgmQ/UJJEcjkZgXC77wcKQfDCjREoBPUDXBDiaK2FoviqZTqBvKwQHs5aKC8rO0ApheS4++kpO3//jU+oyWfMqyiuUwAAAABJRU5ErkJggg==" width="16px" height="16px"> Number of node expectation</span></span></div></th><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div><div class="OutLinkCell"></div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td><td class="slreqrtmxCellContent"><div></div></td></tr></table></article></div>
+<script>
+    // this part is for hide/show the configuration pane. 
+
+    // hide show configuration pane.
+    makeConfigColHidable();
+
+    // attach the mouse over, mouse move, mouse down, mouse up callback. 
+    makeTableResizable();
+
+
+    function makeConfigColHidable() {
+        var hideshow_button = document.getElementById("hide_show_config-col");
+        var configCol = document.getElementsByClassName("config-col")[0];
+        var tableCol = document.getElementsByClassName("table-col")[0];
+        var wholeContent = document.getElementsByClassName("slreqrtmx")[0];
+        hideshow_button.onclick = function () {
+            if (configCol.style.display === "none") {
+                configCol.style.display = "block";
+                tableCol.style['width'] = "81vw";
+                configCol.style.width = "15vw";
+                this.innerHTML = "&#9664;"
+            } else {
+                configCol.style.display = "none";
+                tableCol.style['width'] = "96vw";
+                this.innerHTML = "&#9654;"
+            }
+        };
+    }
+
+
+    var resizingType;
+    var isResizing;
+    var isClosing;
+    var hLinePosition;
+    var vLinePosition;
+    var draggingStartPosition;
+
+    function makeTableResizable() {
+        // here is the idea. 
+        // when mouse over the header border, between border size: offset is less than 10px, make cursor resizable. 
+        //             when mouse move out the range, remove the resizable part. 
+        // when mouse down while the cursor is resizable. create a drag bar. 
+        //   remember current col/row height/width. 
+        //   remember the current mouse offset x/y
+        //   in this case, when mouse move. 
+        //       move the drag bar. 
+        // when mouse up
+        //   calculate current mouse offset x/y, calculate the difference. 
+        //     set the new col/row height/width by add the offset difference. 
+        //   reset the current col/row height/width, current mouse offset x/y
+        attachEventsForFirstTableCell();
+    }
+
+    function attachEventsForFirstTableCell() {
+        var firstCell = document.querySelector("th.tableFirstCell")
+        attachEventsForNode(firstCell);
+    }
+
+    function attachEventsForNode(targetNode) {
+        targetNode.addEventListener('mousedown', function (e) {
+            _handleMouseDown(e);
+        });
+
+        document.addEventListener('mouseup', function (e) {
+            _handleMouseUp(e);
+        });
+
+        targetNode.addEventListener('mouseover', function (e) {
+            _handleMouseOver(e);
+        });
+
+        document.addEventListener('mousemove', function (e) {
+            _handleMouseMove(e);
+        });
+    }
+
+
+    getPositionStatus = function (evt) {
+        var closeToX = false;
+        var closeToY = false;
+
+        var currentHeaderInfo = getCurrentHeader();
+
+        if (parseInt(currentHeaderInfo.colHeaderH) - evt.offsetY < 5 && parseInt(currentHeaderInfo.colHeaderH) - evt.offsetY > -5) {
+            closeToY = true;
+        }
+        if (parseInt(currentHeaderInfo.rowHeaderW) - evt.offsetX < 5 && parseInt(currentHeaderInfo.rowHeaderW) - evt.offsetX > -5) {
+            closeToX = true;
+        }
+
+        return {
+            closeToX: closeToX,
+            closeToY: closeToY,
+            closeToBoth: closeToX && closeToY
+        }
+    }
+
+
+    _handleMouseOver = function (evt) {
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
+        }
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        }
+        _changeTargetClass(evt);
+    }
+
+    _changeTargetClass = function (evt) {
+        var firstCell = document.querySelector("th.tableFirstCell");
+        if (evt.buttons === 1) {
+            firstCell.classList.remove('rowHeaderResize');
+            firstCell.classList.remove('colHeaderResize');
+            firstCell.classList.remove('bothHeaderResize');
+        } else {
+            var currentPositionStatus = getPositionStatus(evt);
+            if (currentPositionStatus.closeToBoth === true) {
+                // resizeBoth
+                firstCell.classList.remove('rowHeaderResize');
+                firstCell.classList.remove('colHeaderResize');
+                firstCell.classList.add('bothHeaderResize');
+                resizingType = 'bothHeaders';
+                isClosing = true;
+            } else if (currentPositionStatus.closeToX === true) {
+                // resize X colHeaderW
+
+                firstCell.classList.remove('colHeaderResize');
+                firstCell.classList.remove('bothHeaderResize');
+
+                firstCell.classList.add('rowHeaderResize');
+                resizingType = 'rowHeader';
+                isClosing = true;
+            } else if (currentPositionStatus.closeToY === true) {
+                // resize y, rowHeaderH
+                firstCell.classList.remove('rowHeaderResize');
+                firstCell.classList.remove('bothHeaderResize');
+
+                firstCell.classList.add('colHeaderResize');
+                resizingType = 'colHeader';
+                isClosing = true;
+            } else {
+                isClosing = false;
+                firstCell.classList.remove('rowHeaderResize');
+                firstCell.classList.remove('colHeaderResize');
+                firstCell.classList.remove('bothHeaderResize');
+            }
+        }
+
+    }
+
+
+    getCurrentHeader = function () {
+        return {
+            colHeaderH: window.getComputedStyle(document.querySelector('th.slreqrtmxColHeader')).height,
+            rowHeaderW: window.getComputedStyle(document.querySelector('th.slreqrtmxRowHeader')).width
+        }
+    }
+
+    _handleMouseUp = function (evt) {
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
+        }
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        }
+        hideLines(evt);
+        if (isResizing) {
+            var endPosition = getCurrentDraggingPosition(evt);
+            isResizing = false;
+            resizeTableHeader(draggingStartPosition, endPosition)
+            draggingStartPosition = {
+                x: 0,
+                y: 0
+            };
+        }
+    }
+    
+    getColHeaderStylerRule = function(){
+        var selector = 'table.slreqrtmxTable th.slreqrtmxColHeader > div';
+        return getSelectorStylerRule(selector);
+    }
+
+    getRowHeaderStylerRule = function(){
+        var selector = 'table.slreqrtmxTable th.slreqrtmxRowHeader';
+        return getSelectorStylerRule(selector);
+    }
+
+    getSelectorStylerRule = function(selector){
+        var allRules = document.styleSheets[0].cssRules;
+        for (i = 0; i< allRules.length; i++){
+            if (allRules[i].selectorText === selector){
+                return allRules[i];
+            }
+        }
+
+        return undefined;
+    }
+
+    resizeTableHeader = function(draggingStartPosition, draggingEndPosition){
+
+        var diffX =  draggingEndPosition.x - draggingStartPosition.x;
+        var diffY =  draggingEndPosition.y - draggingStartPosition.y;
+        
+        if (diffX !== 0){
+            var headerWidthStylerRule = getRowHeaderStylerRule();
+            var rowHeaderWidth = parseInt(window.getComputedStyle(document.querySelector('th.slreqrtmxRowHeader')).width);
+            //var rowHeaderWidth = parseInt(headerWidthStylerRule.style.width);
+            var newWidth = Math.max(rowHeaderWidth + diffX, 30);
+            headerWidthStylerRule.style.width = newWidth + 'px';
+            headerWidthStylerRule.style['min-width'] = newWidth + 'px';
+            headerWidthStylerRule.style['max-width'] = newWidth + 'px';
+            
+        }
+
+        if (diffY !== 0){
+            var headerHeightStylerRule = getColHeaderStylerRule();
+            var colHeaderHeight = parseInt(window.getComputedStyle(document.querySelector('th.slreqrtmxColHeader div')).height);
+            var newHeight = Math.max(colHeaderHeight + diffY, 30);
+            headerHeightStylerRule.style.height = newHeight + 'px';
+            headerHeightStylerRule.style['min-height'] = newHeight + 'px';
+            headerHeightStylerRule.style['max-height'] = newHeight + 'px';
+        }
+    }
+
+    _handleMouseDown = function (evt) {
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
+        }
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        }
+
+        
+        drawResizingLine(evt);
+        
+
+        draggingStartPosition = getCurrentDraggingPosition(evt);
+    }
+
+    getCurrentDraggingPosition = function(evt){
+
+        draggingPositionX = 0;
+        draggingPositionY = 0;
+        if (isResizing) {
+            switch (resizingType) {
+                case 'colHeader':
+                    draggingPositionY = evt.pageY;
+                    break;
+                case 'rowHeader':
+                    draggingPositionX = evt.pageX;
+                    break;
+                case 'bothHeaders':
+                    draggingPositionX = evt.pageX;
+                    draggingPositionY = evt.pageY;
+                    break;
+            }
+        }
+
+        return {
+            x: draggingPositionX,
+            y: draggingPositionY
+        }
+
+    }
+
+    drawResizingLine = function (evt) {
+        if (isResizing || isClosing) {
+            switch (resizingType) {
+                case 'colHeader':
+                    drawResizeHLine(evt);
+                    isResizing = true;
+                    break;
+                case 'rowHeader':
+                    drawResizeVLine(evt);
+                    isResizing = true;
+                    break;
+                case 'bothHeaders':
+                    drawResizeVLine(evt);
+                    drawResizeHLine(evt);
+                    isResizing = true;
+                    break;
+            }
+        }
+    }
+
+    _handleMouseMove = function (evt) {
+
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
+        }
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        }
+
+        if (evt.buttons === 1) {
+            drawResizingLine(evt);
+        } else {
+            _changeTargetClass(evt);
+        }
+    }
+
+
+    hideLines = function (evt) {
+        var hrLine = document.querySelector('.colHeaderResizeLine');
+        if (hrLine) {
+            hrLine.style.display = 'none';
+        }
+
+        var vtLine = document.querySelector('.rowHeaderResizeLine');
+        if (vtLine) {
+            vtLine.style.display = 'none';
+        }
+    }
+
+    drawResizeHLine = function (evt) {
+        var hrLine = document.querySelector('.colHeaderResizeLine');
+        var mouseY = event.pageY - 12;
+
+        mouseY = Math.max(mouseY, 200);
+        var hrTrans = 'translate(0px, ' + mouseY + 'px)';
+
+        var configNode = document.querySelector('.config-col');
+
+        if (window.getComputedStyle(configNode).display === 'none'){
+            configWidth = -16;
+        }else{
+            configWidth = parseInt(window.getComputedStyle(configNode).width);
+        }
+
+        if (!hrLine) {
+            var tableNode = document.querySelector('table.slreqrtmxTable');
+            var tableWidth = window.getComputedStyle(tableNode).width;
+            var docDIV = document.querySelector('.slreqrtmx');
+            
+            hrLine = document.createElement('div');
+            hrLine.classList.add('colHeaderResizeLine');
+            docDIV.appendChild(hrLine);
+            hrLine.style.width = tableWidth;
+            hrLine.style.left = (configWidth + 30) + 'px';
+        } else {
+            hrLine.style.display = 'block';
+            hrLine.style.left = (configWidth + 30) + 'px';
+        }
+        hrLine.style.transform = hrTrans;
+    }
+
+    drawResizeVLine = function (evt) {
+
+        var vtLine = document.querySelector('.rowHeaderResizeLine');
+        var mouseX = event.pageX - 12;
+        
+        var configNode = document.querySelector('.config-col');
+        var configWidth;
+        if (window.getComputedStyle(configNode).display === 'none'){
+            configWidth = 10;
+        }else{
+            configWidth = parseInt(window.getComputedStyle(configNode).width);
+        }
+
+        mouseX = Math.max(mouseX, configWidth + 185);
+        
+        var vtTrans = 'translate(' + mouseX + 'px, 0px)';
+
+        if (!vtLine) {
+            var tableNode = document.querySelector('table.slreqrtmxTable');
+            var tableHeight = window.getComputedStyle(tableNode).height;
+            var docDIV = document.querySelector('.slreqrtmx');
+            vtLine = document.createElement('div');
+            vtLine.classList.add('rowHeaderResizeLine');
+            docDIV.appendChild(vtLine);
+            //vtLine.style.height = tableHeight;
+            vtLine.style.top = '10px';
+        } else {
+            vtLine.style.display = 'block';
+        }
+        vtLine.style.transform = vtTrans;
+    }
+</script>
+
+</body></html>
