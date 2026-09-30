@@ -22,7 +22,7 @@ int server_coid = 0;
 
 // ------------------------------------------ Structs ------------------------------------------ //
 
-typedef struct updateMsg {		// message that gets sent to control with current status of system
+struct updateMsg {		// message that gets sent to control with current status of system
 	struct _pulse hdr; 			// Our real data comes after this header
 	int SenderPID;       		// our data (unique id from client)
 	int currentState;			// current state of the state machine
@@ -89,7 +89,7 @@ int initialiseComChannel(void){
 	rM.hdr.subtype = 0x00;
 
 	// wait for communication confirmation from server
-	int rcvid = MsgReceive(cD.CID, &cCD, sizeof(struct connectionData), NULL); 	//waits here for msg
+	int rcvid = MsgReceive(cD.CID, &cCD, sizeof(struct connectionData), NULL); 	//waits here for msg (do we need a timeout?)
 	if (rcvid == -1) { 														// Error condition, exit
 	   printf("\nFailed to MsgReceive\n");
 	   return EXIT_FAILURE;
@@ -108,7 +108,7 @@ int initialiseComChannel(void){
 
 	server_coid = ConnectAttach(ND_LOCAL_NODE, cCD.PID, cCD.CID, _NTO_SIDE_CHANNEL, 0);		// need to check this
 	if (server_coid == -1) {
-			printf("\n    ERROR, could not connect to server!\n\n");
+			printf("\n    ERROR, could not establish two way connection\n\n");
 			return EXIT_FAILURE;
 		}
 		printf("Connection established to control Node\n");
@@ -133,19 +133,43 @@ void *statusUpdate(void *data){
 	 *  transmit to control
 	 *
 	 */
-	bool alive = true;						// allow us to terminate if need be
-	uM.SenderPID = cD.PID;			// pack local PID only need to do once on startup hopefully)
+	bool alive = true;																						// allow us to terminate if need be (currently unused)
+	uM.SenderPID = cD.PID;																					// pack local PID only need to do once on startup hopefully)
 	while(alive){
-		sleep(1);					// sleep for 1 second
+		sleep(1);																							// sleep for 1 second
 		if (MsgSend(server_coid, &uM, sizeof(struct updateMsg), &rM, sizeof(struct replyMsg)) == -1) {		// the struct will be updated by other threads, so critical code here
-			printf(" Error in transmitting message");
-				// maybe we did not get a reply from the server
-			return EXIT_FAILURE;
+			printf(" Error in transmitting message");  														// maybe we did not get a reply from the server
 		}
 	}
-	return EXIT_SUCCESS;		// need to cast
+	return EXIT_SUCCESS;
 }
 
+
+// ################################################## //
+// ############## Input Thread ###################### //
+// ################################################## //
+void *inputProcessing(void *data){
+
+	return EXIT_SUCCESS;
+}
+
+
+// ################################################## //
+// ############## Output Thread ##################### //
+// ################################################## //
+void *outputProcessing(void *data){
+
+	return EXIT_SUCCESS;
+}
+
+
+// ################################################## //
+// ############## State Machine ##################### //
+// ################################################## //
+void *stateMachine(void *data){
+
+	return EXIT_SUCCESS;
+}
 
 // ------------------------------------------ Main (Thread) ------------------------------------------ //
 
@@ -154,11 +178,14 @@ void *statusUpdate(void *data){
 // ################################## //
 int main(void) {
 	// create com channel
-		initialiseComChannel();
+	initialiseComChannel();
 
-	// initialise pthread for status update (default for now maybe change to round robin)
-	pthread_t su;
+	// initialise threads (default for now maybe change to round robin)
+	pthread_t su, ip, op, sm;
 	pthread_create(&su,NULL,statusUpdate, NULL);
+	pthread_create(&ip,NULL,inputProcessing, NULL);
+	pthread_create(&op,NULL,outputProcessing, NULL);
+	pthread_create(&sm,NULL,stateMachine, NULL);
 
 
 
