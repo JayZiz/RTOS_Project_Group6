@@ -1,6 +1,6 @@
 /*
  * Template for group 6 traffic light system
- * includes status update and initialising communication with control node
+ * includes status update and initializing communication with control node
  */
 
 #include <stdio.h>
@@ -15,27 +15,38 @@
 
 #define replyBuf 10
 #define controlBuf 10
+#define senderBuf 10
+#define receiverBuf 10
 
 // ------------------------------------------ Global Variables ------------------------------------------ //
 
-int server_coid = 0;
+int servercoid = 0;
 
 // ------------------------------------------ Structs ------------------------------------------ //
 
 struct updateMsg {		// message that gets sent to control with current status of system
 	struct _pulse hdr; 			// Our real data comes after this header
-	int SenderPID;       		// our data (unique id from client)
+	char SenderID;       		// our data (unique id from client)
 	int currentState;			// current state of the state machine
 	bool sensorState;			// if vehicle/train is present or not (1/0)
 	int timeSinceLastChange;	// time since the state machine last changed state
-	int phaseState;			// ignore for now - implement if time later
+	int phaseState;				// ignore for now - implement if time later
 };
 struct updateMsg uM;
 
 struct controlMsg {				// message received form control
 	struct _pulse hdr; 			// Our real data comes after this header
 	int SenderPID;       		// control data (unique id)
-	char data[controlBuf];		// need to confirm data we want to send (unfinished)
+	bool failState;				// force fail state
+};
+struct controlMsg cM;
+
+struct ForwardMsg {				// message received form control
+	struct _pulse hdr; 			// Our real data comes after this header
+	char SenderID[senderBuf];       // control data (unique id)
+	char RecevierID[receiverBuf];	// where we are sending the message
+	int currentState;			// current state of state machine
+	bool trainApproach;			// train approaching or not
 };
 struct controlMsg cM;
 
@@ -54,12 +65,20 @@ struct connectionData cCD;		// control node info
 
 
 // ------------------------------------------ functions ------------------------------------------ //
+size_t read_data(FILE *fp, struct connectionData *p) {
+	return (fread(p,sizeof(struct connectionData),1,fp));
+}
 
 // ######################################################################## //
 // ############## Establish communications with control Node ############## //
 // ######################################################################## //
-
 int initialiseComChannel(void){
+	controlLocalCom();
+	localControlCom();
+}
+
+int controlLocalCom(void){
+	// control node -> local node communication
 	FILE *fp;				// file pointer
 
 	// create channel
@@ -103,21 +122,47 @@ int initialiseComChannel(void){
 		MsgReply(rcvid, EOK, &rM, sizeof(rM));								// reply to control to confirm msg received. (update so we send control node what this node is incharge of?)
 	}
 
+	return EXIT_SUCCESS;
+}
 
-	//unsure on below
+int localControlCom(void){
+	// local node -> control node communication
+	FILE *fp;
 
-	server_coid = ConnectAttach(ND_LOCAL_NODE, cCD.PID, cCD.CID, _NTO_SIDE_CHANNEL, 0);		// need to check this
-	if (server_coid == -1) {
-			printf("\n    ERROR, could not establish two way connection\n\n");
+	fp = fopen("tmp/myNodeInfo.info", "r");
+	if(fp != NULL) {
+		while (read_data(fp, &cCD) != 0){
+			printf("PID=%d", cCD.PID);
+			printf("  CID=%d", cCD.CID);
+			printf("\n");
+		}
+		fclose(fp);
+		// Connect to channel
+		servercoid = ConnectAttach(ND_LOCAL_NODE, cCD.PID, cCD.CID, _NTO_SIDE_CHANNEL, 0);
+		if (servercoid == -1)
+		{
+			printf("\n    ERROR, could not connect to server!\n\n");
 			return EXIT_FAILURE;
 		}
-		printf("Connection established to control Node\n");
 
-	// need to get PID of control??
-	// can just use reply msg?
-	// ask chris maybe
+		printf("Connection established to process with PID:%d, Ch:%d\n", cCD.PID, cCD.CID);
 
-	return EXIT_SUCCESS;
+		//reply
+
+		printf("Sending confirmation that Client has established connnection successfully to server\n");	// empty packet
+
+		if (MsgSend(servercoid, &cM, sizeof(cM), &rM, sizeof(rM)) == -1) {
+			printf(" Error data NOT sent to server\n");
+				// maybe we did not get a reply
+			return EXIT_FAILURE;
+		}
+		else { // now process the reply
+			printf("Server Acknowledged connection\n");
+			printf("\n");
+		}
+		return EXIT_SUCCESS;
+	}
+	return EXIT_FAILURE;
 }
 
 // ------------------------------------------ Threads ------------------------------------------ //
@@ -126,18 +171,11 @@ int initialiseComChannel(void){
 // ############## Status Update Thread ############## //
 // ################################################## //
 void *statusUpdate(void *data){
-	/*
-	 *  after x amount of time
-	 *  grab info for struct
-	 *  pack struct
-	 *  transmit to control
-	 *
-	 */
 	bool alive = true;																						// allow us to terminate if need be (currently unused)
-	uM.SenderPID = cD.PID;																					// pack local PID only need to do once on startup hopefully)
+	uM.SenderID = cCD.PID;	// need to adjust with enum bullshit																				// pack local PID only need to do once on startup hopefully)
 	while(alive){
-		sleep(1);																							// sleep for 1 second
-		if (MsgSend(server_coid, &uM, sizeof(struct updateMsg), &rM, sizeof(struct replyMsg)) == -1) {		// the struct will be updated by other threads, so critical code here
+		sleep(1);																							// sleep for 1 second (maybe replace with HW timer)
+		if (MsgSend(servercoid, &uM, sizeof(struct updateMsg), &rM, sizeof(struct replyMsg)) == -1) {			// the struct will be updated by other threads, so critical code here
 			printf(" Error in transmitting message");  														// maybe we did not get a reply from the server
 		}
 	}
