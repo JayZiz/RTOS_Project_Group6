@@ -20,8 +20,9 @@
 
 // ------------------------------------------ Global Variables ------------------------------------------ //
 
-const char * sendMqueueLocation = "/net/VM_x86_Target02/Send_queue";  	// one queue on control node for receiving data from this node
-const char * rcvMqueueLocation = "/net/VM_x86_Target02/xxx_rcv_queue"; 				 	// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
+const char * sendMqueueLocation = "/net/Control_Node/Send_queue";  			// one queue on control node for receiving data from this node
+const char * rcvMqueueLocation = "/net/Control_Node/xxx_rcv_queue"; 		// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
+char rcvBuffer[1000];														// receive message buffer
 
 
 // ------------------------------------------ Structs ------------------------------------------ //
@@ -55,8 +56,11 @@ struct replyMsg {				// the reply message for when a message is received from co
 };
 struct replyMsg rM;
 
+// queues
 mqd_t mqs, mqr;
 
+// mutexes
+pthread_mutex_t statusUpdateMutex = PTHREAD_MUTEX_INITIALIZER;
 
 // ------------------------------------------ functions ------------------------------------------ //
 
@@ -69,13 +73,15 @@ int initialiseComChannel(void){
 	// check connection to send queue
 	printf("Connecting to %s queue on control node, please wait\n" ,sendMqueueLocation);
 	int mqueueEstablished = 0;														// for while loop
-	char confirmation[10];															// confirmation message for send queue
-	strlcpy(confirmation, "SEND_EOK", sizeof(confirmation));
+	strlcpy(rM.buf, "SEND_EOK", sizeof(rM.buf));									// confirmation message for send queue
 	while(!mqueueEstablished){														// loop until mqueue is opened successfully (need a timeout???)
 		mqs = mq_open(sendMqueueLocation, O_WRONLY);								// opens queue on control node if it exists
 		if (mqs != -1){																// if connection is good
-			mq_send(mqs,(const char*)&confirmation, sizeof(confirmation), 0);		// send confirmation to control (do we need to check control get this msg lmao)
-			printf("\nconnection to %s on control node confirmed!\n", sendMqueueLocation);
+			if (mq_send(mqs,(const char*)&rM, sizeof(rM), 0) == -1){
+				perror("mq_send");
+				return EXIT_FAILURE;
+			}						// send confirmation to control (do we need to check control get this msg lmao)
+			printf("-->connection to %s on control node confirmed!\n", sendMqueueLocation);
 			mqueueEstablished = 1;													// exit while loop
 		} else {																	// else no connection
 			//printf(">");															// just to show system is not frozen.
@@ -83,24 +89,25 @@ int initialiseComChannel(void){
 		//sleep(1);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
 
-	// check connection to send queue
+	// check connection to rcv queue
 	printf("\nConnecting to %s queue on control node, please wait\n", rcvMqueueLocation);
 	mqueueEstablished = 0;															// reset while loop variable
-		strlcpy(confirmation, "RCV_EOK", sizeof(confirmation));
+	strlcpy(rM.buf, "RCV_EOK", sizeof(rM.buf));										// confirmation message for send queue
 	while(!mqueueEstablished){														// loop until mqueue is opened successfully (need a timeout???)
 		mqr = mq_open(rcvMqueueLocation, O_RDONLY);									// opens queue on control node if it exists
 		if (mqr != -1){																// if connection is good
-			mq_send(mqs,(const char*)&confirmation, sizeof(confirmation), 0);		// send confirmation to control (should we pull data from queue to confirm working?)
-			printf("\nconnection to %s on control node confirmed!\n", rcvMqueueLocation);
+			if (mq_send(mqs,(const char*)&rM, sizeof(rM), 0) == -1){				// send confirmation to control (should we pull data from queue to confirm working?)
+				perror("mq_send");
+				return EXIT_FAILURE;
+			}
+			printf("-->connection to %s on control node confirmed!\n", rcvMqueueLocation);
 			mqueueEstablished = 1;													// exit while loop
 		} else {																	// else no connection
 			//printf(">");															// just to show system is not frozen. implement another time, keeps glitching out
 		}
 		//sleep(1);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
-
 	// note that the queues remain open so you don't need to use mq_open just mq_send/receive when sending or reading messages.
-
 	return EXIT_SUCCESS;
 }
 
@@ -109,16 +116,16 @@ int initialiseComChannel(void){
 // ################################################## //
 // ############## Status Update Thread ############## //
 // ################################################## //
-void *statusUpdate(void *data){
-	bool alive = true;																						// allow us to terminate if need be (currently unused)
+void *statusUpdate(void *data){							// might update to have higher priority later
+	bool alive = true;									// allow us to terminate if need be (currently unused)
 	while(alive){
-		sleep(1);																							// sleep for 1 second (should replace with HW timer)
-		mq_send(mqs, (const char*)&uM, sizeof(uM), 0);
-
+		sleep(1);										// sleep for 1 second, i will replace with HW timer later
+		pthread_mutex_lock(&statusUpdateMutex);				// lock for status update struct use (maybe change to add time limit later)
+		mq_send(mqs, (char *)&uM, sizeof(uM), 0);		// send status update to control node
+		pthread_mutex_unlock(&statusUpdateMutex);			// unlock to allow writing to status update struct by other threads
 	}
 	return EXIT_SUCCESS;
 }
-
 
 // ################################################## //
 // ############## Input Thread ###################### //
@@ -146,7 +153,7 @@ void *stateMachine(void *data){
 	return EXIT_SUCCESS;
 }
 
-// ------------------------------------------ Main (Thread) ------------------------------------------ //
+// ------------------------------------------ Main Thread ------------------------------------------ //
 
 // ################################## //
 // ############## MAIN ############## //
@@ -155,18 +162,18 @@ int main(void) {
 	// define this node for sending messages
 		// update message
 	memset(&uM, 0, sizeof(uM)); 						// Clears the array
-	snprintf(uM.senderID, sizeof(uM.senderID), ID);		// copies string into struct element
+	strlcpy(uM.senderID, ID, sizeof(uM.senderID));		// copies string into struct element
 		// reply message
 	memset(&rM, 0, sizeof(rM)); 						// Clears the array
-	snprintf(rM.senderID, sizeof(rM.senderID), ID);		// copies string into struct element
+	strlcpy(rM.senderID, ID, sizeof(rM.senderID));		// copies string into struct element
 		// forward message
 	memset(&fM, 0, sizeof(fM)); 						// Clears the array
-	snprintf(fM.senderID, sizeof(fM.senderID), ID);		// copies string into struct element
+	strlcpy(fM.senderID, ID, sizeof(fM.senderID));		// copies string into struct element
 
 	// check communication channel
 	initialiseComChannel();
 
-	// initialise threads (default for now maybe change to round robin)
+	// initialise threads (default for now maybe change to round robin later if time)
 	pthread_t su, ip, op, sm;
 	pthread_create(&su,NULL,statusUpdate, NULL);
 	pthread_create(&ip,NULL,inputProcessing, NULL);

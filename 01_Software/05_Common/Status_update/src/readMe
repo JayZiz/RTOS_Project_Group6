@@ -1,0 +1,46 @@
+How to use the template:
+
+template initialises communication with the control node and some threads
+input/output/state machine threads are empty and need to be completed
+	obviously will likely need to add more threads for your solutions
+	
+status update thread is complete, as your program runs it will need to update the update Message struct with current data, 
+	note this will be a critical section of code so will need to use mutex writing update struct.
+
+	
+##Sending message##
+	use the following template to send message (can implement as function call or not up to you)
+	dont need to use mq_open
+		ssize_t n = mq_send(mqs, (char *)&fM, sizeof(fM), 0);				// Send message
+		if (n == -1) {														// check for error with msg send
+			perror("mq_send");
+			return EXIT_FAILURE;
+		} 
+	fM struct used in example but can replace all instances of fM with another struct for other cases e.g rM
+	will send whatever is in the struct specified at the time
+
+##Receiving message## likely to be altered later as universal solution, will work for prototyping tho
+	use the following template to rcv message (can implement as function call or not up to you)
+	dont need to use mq_open
+		n = mq_receive(mqr, rcvBuffer, sizeof(rcvBuffer), NULL);  				//wait for the message (blocks)
+		if (n == -1) {															// error with msg rcv
+			perror("mq_receive");												// print error
+			return EXIT_FAILURE;
+		} else if ((size_t)n != sizeof(cM)){									// wrong struct received
+			printf("-->unexpected message size\n");								// print error
+		} else {																// else msg received correctly
+			memcpy(&cM, rcvBuffer, sizeof(cM));									// save rcv values in rM struct
+		}
+	data will be saved in designated struct, in exmaple its cM but will also need fM one for exmaple
+	The receive queue is unique for each worker node so will have unique rcvMessage path (see code)
+	Might need a function to decifer struct received, i will look into this.
+
+
+If your having trouble with anything just msg the group chat before defaulting to AI, I think we should avoid using it where possible to reduce the expected standard of code delivered.
+
+##testing## 
+	With testing i have made a control sim that will confirm connection for the initialize communications function, i have added as a c file in 01_Software\05_Common.
+	you will need to make a project for it an the VM it runs on needs to have to host name changed to "Control_Node"
+	add whatever you need to this to test your functions
+	save conmtrol sim as a local copy not onto the git
+	
