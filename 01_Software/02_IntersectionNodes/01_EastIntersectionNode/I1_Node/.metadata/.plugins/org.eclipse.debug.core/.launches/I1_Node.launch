@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.qnx.tools.ide.qde.ui.QDELaunch">
+    <stringAttribute key="com.qnx.tools.ide.qde.core.TARGET_ATTR" value="---"/>
+    <booleanAttribute key="defaults_pending" value="true"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="I1_Node"/>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/I1_Node"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="4"/>
+    </listAttribute>
+    <stringAttribute key="org.eclipse.launchbar.core.originalName" value="I1_Node"/>
+    <stringAttribute key="org.eclipse.launchbar.core.providerClass" value="com.qnx.tools.ide.qde.debug.internal.core.QDEProjectLaunchConfigurationProvider"/>
+</launchConfiguration>
