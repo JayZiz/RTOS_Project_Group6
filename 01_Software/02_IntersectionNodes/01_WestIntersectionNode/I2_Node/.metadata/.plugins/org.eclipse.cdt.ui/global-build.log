@@ -1,0 +1,103 @@
+12:47:27 **** Build of configuration x86_64-debug for project I2_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I2_Node.d,-MT,build/x86_64-debug/src/I2_Node.o -o build/x86_64-debug/src/I2_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I2_Node.c
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I2_Node   build/x86_64-debug/src/I2_Node.o  
+12:56:27 **** Incremental Build of configuration x86_64-debug for project I2_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I2_Node.d,-MT,build/x86_64-debug/src/I2_Node.o -o build/x86_64-debug/src/I2_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I2_Node.c
+src/I2_Node.c: In function 'check_car':
+src/I2_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'check_pedes':
+src/I2_Node.c:138:38: error: 'I1_PED_Q' undeclared (first use in this function)
+   if((pedes_traffic->ped_q = mq_open(I1_PED_Q, O_RDONLY)) != -1)
+Makefile:55: recipe for target 'build/x86_64-debug/src/I2_Node.o' failed
+                                      ^
+src/I2_Node.c:138:38: note: each undeclared identifier is reported only once for each function it appears in
+src/I2_Node.c:148:29: error: 'PED_W1_W2' undeclared (first use in this function)
+      pedes_traffic->ped_e = PED_W1_W2;
+                             ^
+src/I2_Node.c:156:29: error: 'PED_W3_W6' undeclared (first use in this function)
+      pedes_traffic->ped_q = PED_W3_W6;
+                             ^
+src/I2_Node.c:159:10: warning: multi-character character constant [-Wmultichar]
+     case '10':
+          ^
+src/I2_Node.c:159:5: warning: case label value exceeds maximum value for type
+     case '10':
+     ^
+src/I2_Node.c:163:10: warning: multi-character character constant [-Wmultichar]
+     case '11':
+          ^
+src/I2_Node.c:163:5: warning: case label value exceeds maximum value for type
+     case '11':
+     ^
+src/I2_Node.c:175:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'check_train':
+src/I2_Node.c:194:40: error: 'I1_TRAIN_Q' undeclared (first use in this function)
+   if((train_traffic->train_q = mq_open(I1_TRAIN_Q, O_RDONLY)) != -1)
+                                        ^
+src/I2_Node.c: In function 'initialise_timer':
+src/I2_Node.c:232:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I2_Node.c:243:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I2_Node.c: In function 'I2_fsm_traffic':
+src/I2_Node.c:292:29: error: 'STATE_R1_GREEN' undeclared (first use in this function)
+      traffic_fsm->state_e = STATE_R1_GREEN;
+                             ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I2_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+12:57:34 **** Incremental Build of configuration x86_64-debug for project I2_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I2_Node.d,-MT,build/x86_64-debug/src/I2_Node.o -o build/x86_64-debug/src/I2_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I2_Node.c
+src/I2_Node.c: In function 'check_car':
+src/I2_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'check_pedes':
+src/I2_Node.c:159:10: warning: multi-character character constant [-Wmultichar]
+     case '10':
+          ^
+src/I2_Node.c:159:5: warning: case label value exceeds maximum value for type
+     case '10':
+     ^
+src/I2_Node.c:163:10: warning: multi-character character constant [-Wmultichar]
+     case '11':
+          ^
+src/I2_Node.c:163:5: warning: case label value exceeds maximum value for type
+     case '11':
+     ^
+src/I2_Node.c:175:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'initialise_timer':
+src/I2_Node.c:232:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I2_Node.c:243:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I2_Node   build/x86_64-debug/src/I2_Node.o  

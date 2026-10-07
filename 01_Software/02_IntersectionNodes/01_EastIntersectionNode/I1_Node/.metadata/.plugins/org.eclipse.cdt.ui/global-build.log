@@ -1,0 +1,704 @@
+11:23:37 **** Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+22:22:54 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:88:27: error: expected ')' before 'mq_open'
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+   if((&car_traffic->car_q mq_open("/fsm_queue", O_RDONLY)) != -1)
+                           ^
+src/I1_Node.c:88:60: warning: comparison between pointer and integer
+   if((&car_traffic->car_q mq_open("/fsm_queue", O_RDONLY)) != -1)
+                                                            ^
+src/I1_Node.c:85:7: warning: unused variable 'msg_recv' [-Wunused-variable]
+  char msg_recv[MSG_QUEUE] = {};
+       ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:98:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:103:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+22:23:15 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:88:27: error: lvalue required as left operand of assignment
+   if((&car_traffic->car_q = mq_open("/fsm_queue", O_RDONLY)) != -1)
+                           ^
+src/I1_Node.c:85:7: warning: unused variable 'msg_recv' [-Wunused-variable]
+  char msg_recv[MSG_QUEUE] = {};
+       ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:98:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:103:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+22:26:40 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:85:7: warning: unused variable 'msg_recv' [-Wunused-variable]
+  char msg_recv[MSG_QUEUE] = {};
+       ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:98:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:103:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+22:52:32 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:95:26: error: 'SENSOR_EW' undeclared (first use in this function)
+     car_traffic->car_e = SENSOR_EW;
+                          ^
+src/I1_Node.c:95:26: note: each undeclared identifier is reported only once for each function it appears in
+src/I1_Node.c:99:26: error: 'SENSOR_NS' undeclared (first use in this function)
+     car_traffic->car_e = SENSOR_NS;
+                          ^
+src/I1_Node.c:102:5: error: 'traffic' undeclared (first use in this function)
+     traffic->car_e = SENSOR_NONE;
+     ^
+src/I1_Node.c:103:36: error: 'traffic_t {aka struct <anonymous>}' has no member named 'sensor_cond'
+    pthread_cond_signal(&car_traffic->sensor_cond);
+                                    ^
+src/I1_Node.c:104:37: error: 'traffic_t {aka struct <anonymous>}' has no member named 'sensor_mutex'
+    pthread_mutex_unlock(&car_traffic->sensor_mutex);
+                                     ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:112:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:117:1: warning: control reaches end of non-void function [-Wreturn-type]
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+22:55:43 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:22: warning: multi-character character constant [-Wmultichar]
+    if(msg_recv[0] == 'R1')
+                      ^
+src/I1_Node.c:102:27: warning: multi-character character constant [-Wmultichar]
+    else if(msg_recv[0] == 'R3')
+                           ^
+src/I1_Node.c:107:5: error: 'traffic' undeclared (first use in this function)
+     traffic->car_e = SENSOR_NONE;
+     ^
+src/I1_Node.c:107:5: note: each undeclared identifier is reported only once for each function it appears in
+src/I1_Node.c:108:36: error: 'traffic_t {aka struct <anonymous>}' has no member named 'sensor_cond'
+    pthread_cond_signal(&car_traffic->sensor_cond);
+                                    ^
+src/I1_Node.c:109:37: error: 'traffic_t {aka struct <anonymous>}' has no member named 'sensor_mutex'
+    pthread_mutex_unlock(&car_traffic->sensor_mutex);
+                                     ^
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+src/I1_Node.c:113:22: error: 'traffic_t {aka struct <anonymous>}' has no member named 'car_q0'
+  mq_close(car_traffic->car_q0);
+                      ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+22:56:15 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:22: warning: multi-character character constant [-Wmultichar]
+    if(msg_recv[0] == 'R1')
+                      ^
+src/I1_Node.c:102:27: warning: multi-character character constant [-Wmultichar]
+    else if(msg_recv[0] == 'R3')
+                           ^
+src/I1_Node.c:107:5: error: 'traffic' undeclared (first use in this function)
+     traffic->car_e = SENSOR_NONE;
+     ^
+src/I1_Node.c:107:5: note: each undeclared identifier is reported only once for each function it appears in
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+22:56:27 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:22: warning: multi-character character constant [-Wmultichar]
+    if(msg_recv[0] == 'R1')
+                      ^
+src/I1_Node.c:102:27: warning: multi-character character constant [-Wmultichar]
+    else if(msg_recv[0] == 'R3')
+                           ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+22:57:02 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:19: warning: multi-character character constant [-Wmultichar]
+    if(msg_recv == 'R1')
+                   ^
+src/I1_Node.c:98:16: warning: comparison between pointer and integer
+    if(msg_recv == 'R1')
+                ^
+src/I1_Node.c:102:24: warning: multi-character character constant [-Wmultichar]
+    else if(msg_recv == 'R3')
+                        ^
+src/I1_Node.c:102:21: warning: comparison between pointer and integer
+    else if(msg_recv == 'R3')
+                     ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+22:59:32 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:16: error: expected expression before ']' token
+    if(msg_recv[] == 'R1')
+                ^
+src/I1_Node.c:98:21: warning: multi-character character constant [-Wmultichar]
+    if(msg_recv[] == 'R1')
+                     ^
+src/I1_Node.c:102:21: error: expected expression before ']' token
+    else if(msg_recv[] == 'R3')
+                     ^
+src/I1_Node.c:102:26: warning: multi-character character constant [-Wmultichar]
+    else if(msg_recv[] == 'R3')
+                          ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+23:00:33 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:98:7: warning: implicit declaration of function 'strcmp' [-Wimplicit-function-declaration]
+    if(strcmp(msg_recv, "R1") == 0)
+       ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:121:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+23:00:56 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:122:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:127:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+23:06:26 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:99:12: error: switch quantity not an integer
+    switch (msg_recv)
+            ^
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:158:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+23:08:34 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_train':
+src/I1_Node.c:158:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+10:40:20 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:154:4: error: duplicate case value
+    case '1':
+    ^
+src/I1_Node.c:138:4: error: previously used here
+    case '1':
+    ^
+src/I1_Node.c:158:4: error: duplicate case value
+    case '2':
+    ^
+src/I1_Node.c:142:4: error: previously used here
+    case '2':
+    ^
+src/I1_Node.c: In function 'main':
+src/I1_Node.c:220:4: error: unknown field 'pedes_e' specified in initializer
+    .pedes_e = PEDES_NONE,
+    ^
+src/I1_Node.c:220:15: error: 'PEDES_NONE' undeclared (first use in this function)
+    .pedes_e = PEDES_NONE,
+               ^
+src/I1_Node.c:220:15: note: each undeclared identifier is reported only once for each function it appears in
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+10:40:34 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:154:4: error: duplicate case value
+    case '1':
+    ^
+src/I1_Node.c:138:4: error: previously used here
+    case '1':
+    ^
+src/I1_Node.c:158:4: error: duplicate case value
+    case '2':
+    ^
+src/I1_Node.c:142:4: error: previously used here
+    case '2':
+    ^
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+10:40:50 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:12:34 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:122:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:182:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'start_timer':
+src/I1_Node.c:236:72: error: 'ch_id' undeclared (first use in this function)
+  traffic_timer->timer_evt.sigev_coid = ConnectAttach(ND_LOCAL_NODE, 0, ch_id, _NTO_SIDE_CHANNEL, 0);
+                                                                        ^
+src/I1_Node.c:236:72: note: each undeclared identifier is reported only once for each function it appears in
+src/I1_Node.c:239:62: error: 'programme' undeclared (first use in this function)
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", programme);
+                                                              ^
+src/I1_Node.c:239:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", programme);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+11:14:18 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'start_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:15:34 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'start_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:21:38 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'start_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:252:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:38:39 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:252:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c: In function 'I1_fsm_traffic':
+src/I1_Node.c:286:19: error: 'traffic_timer' undeclared (first use in this function)
+  initialise_timer(traffic_timer);
+                   ^
+src/I1_Node.c:286:19: note: each undeclared identifier is reported only once for each function it appears in
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_GREEN' not handled in switch [-Wswitch]
+  switch(traffic_fsm->state_e)
+  ^
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_GREEN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_WAIT_TRAIN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_FAIL' not handled in switch [-Wswitch]
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+11:38:54 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:252:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c: In function 'I1_fsm_traffic':
+src/I1_Node.c:286:19: warning: passing argument 1 of 'initialise_timer' from incompatible pointer type [-Wincompatible-pointer-types]
+  initialise_timer(&traffic_fsm);
+                   ^
+src/I1_Node.c:231:6: note: expected 'traffic_t * {aka struct <anonymous> *}' but argument is of type 'traffic_t ** {aka struct <anonymous> **}'
+ void initialise_timer(traffic_t *traffic_timer)
+      ^
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_GREEN' not handled in switch [-Wswitch]
+  switch(traffic_fsm->state_e)
+  ^
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_GREEN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_WAIT_TRAIN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_FAIL' not handled in switch [-Wswitch]
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:39:06 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:252:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c: In function 'I1_fsm_traffic':
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_GREEN' not handled in switch [-Wswitch]
+  switch(traffic_fsm->state_e)
+  ^
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R3_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_GREEN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_R1_YELLOW' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_WAIT_TRAIN' not handled in switch [-Wswitch]
+src/I1_Node.c:287:2: warning: enumeration value 'STATE_FAIL' not handled in switch [-Wswitch]
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+11:44:55 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:124:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:184:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:241:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:252:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+12:46:00 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:179:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:236:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:247:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c: In function 'I1_fsm_traffic':
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+src/I1_Node.c:278:9: error: 'traffic' undeclared (first use in this function)
+   while(traffic->car_e == SENSOR_NONE){
+         ^
+src/I1_Node.c:278:9: note: each undeclared identifier is reported only once for each function it appears in
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+12:46:14 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:179:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:236:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:247:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c: In function 'I1_fsm_traffic':
+src/I1_Node.c:324:9: error: 'traffic' undeclared (first use in this function)
+   while(traffic->car_e != SENSOR_R1){
+         ^
+src/I1_Node.c:324:9: note: each undeclared identifier is reported only once for each function it appears in
+cc: /home/minh/qnx700/host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/cc1 error 1
+make: *** [build/x86_64-debug/src/I1_Node.o] Error 1
+Makefile:55: recipe for target 'build/x86_64-debug/src/I1_Node.o' failed
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+12:46:23 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:179:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:236:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:247:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  
+12:58:50 **** Incremental Build of configuration x86_64-debug for project I1_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I1_Node.d,-MT,build/x86_64-debug/src/I1_Node.o -o build/x86_64-debug/src/I1_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I1_Node.c
+src/I1_Node.c: In function 'check_car':
+src/I1_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'check_pedes':
+src/I1_Node.c:179:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I1_Node.c: In function 'initialise_timer':
+src/I1_Node.c:236:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I1_Node.c:247:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I1_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I1_Node   build/x86_64-debug/src/I1_Node.o  

@@ -1,0 +1,42 @@
+12:57:34 **** Incremental Build of configuration x86_64-debug for project I2_Node ****
+make -j16 all 
+qcc -Vgcc_ntox86_64 -c -Wp,-MMD,build/x86_64-debug/src/I2_Node.d,-MT,build/x86_64-debug/src/I2_Node.o -o build/x86_64-debug/src/I2_Node.o  -Wall -fmessage-length=0 -g -O0 -fno-builtin  src/I2_Node.c
+src/I2_Node.c: In function 'check_car':
+src/I2_Node.c:119:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'check_pedes':
+src/I2_Node.c:159:10: warning: multi-character character constant [-Wmultichar]
+     case '10':
+          ^
+src/I2_Node.c:159:5: warning: case label value exceeds maximum value for type
+     case '10':
+     ^
+src/I2_Node.c:163:10: warning: multi-character character constant [-Wmultichar]
+     case '11':
+          ^
+src/I2_Node.c:163:5: warning: case label value exceeds maximum value for type
+     case '11':
+     ^
+src/I2_Node.c:175:12: warning: return makes pointer from integer without a cast [-Wint-conversion]
+     return -1;
+            ^
+src/I2_Node.c: In function 'initialise_timer':
+src/I2_Node.c:232:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't ConnectAttach to self!\n", program_name);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+src/I2_Node.c:243:12: warning: passing argument 1 of 'printf' from incompatible pointer type [-Wincompatible-pointer-types]
+     printf(stderr, "%s:  couldn't create a timer, errno %d\n", program_name, errno);
+            ^
+In file included from src/I2_Node.c:1:0:
+/home/minh/qnx700/target/qnx7/usr/include/stdio.h:176:12: note: expected 'const char *' but argument is of type 'FILE * {aka struct _Filet *}'
+ extern int printf(const char *__format, ...);
+            ^
+qcc -Vgcc_ntox86_64 -o build/x86_64-debug/I2_Node   build/x86_64-debug/src/I2_Node.o  
+
+12:57:34 Build Finished. 0 errors, 8 warnings. (took 119ms)
+
