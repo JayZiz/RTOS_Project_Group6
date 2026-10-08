@@ -120,9 +120,9 @@ int initialiseComChannel(void){
 	int rcvX1 = 0;				// rcv count
 	int rcvUI = 0;				// rcv count
 	while (!rcvgood){																		// while we havent received all messages
-		if (msgRcvStruct == msgrM){																// if an rM struct is received
-			pthread_mutex_lock(&sendQueueMutex);												// lock mutex critical section
-			msgRcvStruct = nomsg;																	// reset enum to nomsg
+		if (msgRcvStruct == msgrM){															// if an rM struct is received
+			pthread_mutex_lock(&sendQueueMutex);											// lock mutex critical section
+			msgRcvStruct = nomsg;															// reset enum to nomsg
 			if ((!strcmp(rM.buf, "SEND_EOK")) || (!strcmp(rM.buf, "RCV_EOK"))) {			// check for expected msg
 				printf("-->received confirmation: %s from node %s\n", rM.buf, rM.senderID);
 			} else {																		// else unexpected msg (check worker node code)
@@ -169,23 +169,6 @@ void *statusUpdate(void *data){							// might update to have higher priority la
 	return EXIT_SUCCESS;
 }
 
-// ################################################## //
-// ############## Input Thread ###################### //
-// ################################################## //
-void *inputProcessing(void *data){
-
-	return EXIT_SUCCESS;
-}
-
-
-// ################################################## //
-// ############## Output Thread ##################### //
-// ################################################## //
-void *outputProcessing(void *data){
-
-	return EXIT_SUCCESS;
-}
-
 
 // ################################################## //
 // ############## State Machine ##################### //
@@ -193,19 +176,19 @@ void *outputProcessing(void *data){
 void *stateMachine(void *data){
 	switch (msgRcvStruct){
 	case nomsg:
-		//nop
+		// do nothing???
 		break;
 	case msguM:
-		//nop
+		// run health check and send to UI
 		break;
 	case msgcM:
-		//nop
+		// wont happen
 		break;
 	case msgfM:
-		//nop
+		// forward to rcvID
 		break;
 	case msgrM:
-		//nop
+		// deal with as we go
 		break;
 	}
 
@@ -267,10 +250,8 @@ int main(void) {
 	initialiseComChannel();
 
 	// initialise threads (default for now maybe change to round robin later if time)
-	pthread_t su, ip, op, sm;
+	pthread_t su,sm;
 	pthread_create(&su,NULL,statusUpdate, NULL);
-	pthread_create(&ip,NULL,inputProcessing, NULL);
-	pthread_create(&op,NULL,outputProcessing, NULL);
 	pthread_create(&sm,NULL,stateMachine, NULL);
 
 	while(1){
