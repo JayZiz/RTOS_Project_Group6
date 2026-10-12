@@ -17,15 +17,12 @@
 #define IDBuf 10
 #define receiverBuf 10
 #define ID "I2"					// define Node ID here for each node (I1 used as an example)
-#define Q_FLAGS O_RDWR | O_CREAT | O_EXCL
-#define Q_Mode S_IRUSR | S_IWUSR
-#define msgSz 1000
 
 // ------------------------------------------ Global Variables ------------------------------------------ //
 
-const char * sendMqueueLocation = "/Send_queue";  					// one queue on control node for receiving data from this node
-const char * rcvMqueueLocation = "/I2_rcv_queue"; 				 	// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
-char rcvBuffer[1000];												// receive message buffer
+const char * sendMqueueLocation = "/net/Control_Node/Send_queue";  			// one queue on control node for receiving data from this node
+const char * rcvMqueueLocation = "/net/Control_Node/I2_rcv_queue"; 		// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
+char rcvBuffer[1000];														// receive message buffer
 
 enum states { 	State1,
 				State2,
@@ -77,6 +74,8 @@ struct replyMsg rM;
 
 mqd_t mqs, mqr;
 
+pthread_mutex_t SENSOR_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+
 
 // ------------------------------------------ functions ------------------------------------------ //
 
@@ -84,60 +83,48 @@ mqd_t mqs, mqr;
 // ############## Establish communications with control Node ############## //
 // ######################################################################## //
 int initialiseComChannel(void){
-	// set up queue attributes
-	struct  mq_attr  attr;
-	attr.mq_maxmsg = 100;		// max message queue amount
-	attr.mq_msgsize = msgSz;	// max message size (make dynamic maybe???)
-	attr.mq_flags = 0;
-	attr.mq_curmsgs = 0;
-	attr.mq_sendwait = 0;
-	attr.mq_recvwait = 0;
-	struct mq_attr * my_attr = &attr;
-
-	mqs = mq_open(sendMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open send queue
-	mqr = mq_open(rcvMqueueLocation, Q_FLAGS, Q_Mode, my_attr);			// open rcv queue
-
-	if (mqs == -1 || mqr == -1){										// check for failure opening queue
-		perror("mq_open");
-		return EXIT_FAILURE;
+	// using mqueue as the minimum, upgrade to native message passing if time\
+	// just really an initial check to see if queue exists before starting the system up
+	// check connection to send queue
+	printf("Connecting to %s queue on control node, please wait\n" ,sendMqueueLocation);
+	int mqueueEstablished = 0;														// for while loop
+	strlcpy(rM.buf, "SEND_EOK", sizeof(rM.buf));									// confirmation message for send queue
+	while(!mqueueEstablished){														// loop until mqueue is opened successfully (need a timeout???)
+		mqs = mq_open(sendMqueueLocation, O_WRONLY);								// opens queue on control node if it exists
+		if (mqs != -1){																// if connection is good
+			if (mq_send(mqs,(const char*)&rM, sizeof(rM), 0) == -1){
+				perror("mq_send");
+				//return EXIT_FAILURE;
+			}						// send confirmation to control (do we need to check control get this msg lmao)
+			printf("-->connection to %s on control node confirmed!\n", sendMqueueLocation);
+			mqueueEstablished = 1;													// exit while loop
+		} else {																	// else no connection
+			printf(">");															// just to show system is not frozen.
+			fflush(stdout);
+		}
+		usleep(500000);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
 
-	printf("checking for confirmation of send queue\n");
-
-	ssize_t n = mq_receive(mqs, rcvBuffer, sizeof(rcvBuffer), NULL);  		//wait for the message
-	if (n == -1) {															// error with msg rcv
-		perror("mq_receive");												// print error
-		return EXIT_FAILURE;
-	} else if ((size_t)n != sizeof(rM)){									// wrong struct received
-		printf("-->unexpected message size\n");								// print error
-	} else {																// else msg received correctly
-		memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
+	// check connection to rcv queue
+	printf("\nConnecting to %s queue on control node, please wait\n", rcvMqueueLocation);
+	mqueueEstablished = 0;															// reset while loop variable
+	strlcpy(rM.buf, "RCV_EOK", sizeof(rM.buf));										// confirmation message for send queue
+	while(!mqueueEstablished){														// loop until mqueue is opened successfully (need a timeout???)
+		mqr = mq_open(rcvMqueueLocation, O_RDONLY);									// opens queue on control node if it exists
+		if (mqr != -1){																// if connection is good
+			if (mq_send(mqs,(const char*)&rM, sizeof(rM), 0) == -1){				// send confirmation to control (should we pull data from queue to confirm working?)
+				perror("mq_send");
+				//return EXIT_FAILURE;
+			}
+			printf("-->connection to %s on control node confirmed!\n", rcvMqueueLocation);
+			mqueueEstablished = 1;													// exit while loop
+		} else {																	// else no connection
+			printf(">");															// just to show system is not frozen. implement another time, keeps glitching out
+			fflush(stdout);
+		}
+		usleep(500000);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
-
-	if (!strcmp(rM.buf, "SEND_EOK")) {										// checks if message is SEND_EOK
-		printf("-->received confirmation: %s from node %s\n", rM.buf, rM.senderID);
-	} else {
-		printf("-->unexpected response %s from node %s\n", rM.buf, rM.senderID);
-	}
-
-	printf("\nchecking for confirmation of rcv queue\n");
-	n = mq_receive(mqs, rcvBuffer, sizeof(rcvBuffer), NULL);  				//wait for the messages
-	if (n == -1) {															// error with msg rcv
-		perror("mq_receive");												// print error
-		return EXIT_FAILURE;
-	} else if ((size_t)n != sizeof(rM)){									// wrong struct received
-		printf("-->unexpected message size\n");								// print error
-	} else {																// else msg received correctly
-		memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
-	}
-
-	if (!strcmp(rM.buf, "RCV_EOK")) {										// checks if message is RCV_EOK
-		printf("-->received confirmation: %s from node %s\n", rM.buf, rM.senderID);
-	} else {
-		printf("-->unexpected response %s from node %s\n", rM.buf, rM.senderID);
-	}
-
-
+	// note that the queues remain open so you don't need to use mq_open just mq_send/receive when sending or reading messages.
 	return EXIT_SUCCESS;
 }
 
@@ -150,7 +137,6 @@ void *statusUpdate(void *data){																					// allow us to terminate if 
 	while(alive){
 		sleep(1);																							// sleep for 1 second (should replace with HW timer)
 		mq_send(mqs, (const char*)&uM, sizeof(uM), 0);
-
 	}
 	return EXIT_SUCCESS;
 }
@@ -165,8 +151,9 @@ void *sensorProcessing(void *data){																					// allow us to terminate
 				"2 = south vehicle sensor\n"
 				"3 = east vehicle sensor\n"
 				"4 = Train approaching\n"
-				"5 = No sensor");
-		scanf("%d",input);
+				"5 = No sensor\n");
+		scanf("%d",&input);
+		pthread_mutex_lock(&SENSOR_MUTEX);
 		if (input == 0){
 			westVehSens = true;
 			westRtTurnSens = false;
@@ -205,7 +192,9 @@ void *sensorProcessing(void *data){																					// allow us to terminate
 			fM.trainApproach = false;
 		} else {
 			printf("RETARD\n");
+			fflush(stdout);
 		}
+		pthread_mutex_unlock(&SENSOR_MUTEX);
 	}
 	return EXIT_SUCCESS;
 }
@@ -217,6 +206,7 @@ void *stateMachine(void *data){
 	curState = State1;				// initial state
 	bool printAllowed = true;		// to stop it spaming the terminal
 	while(alive){
+		pthread_mutex_lock(&SENSOR_MUTEX);
 		if(curState != nxtState){		// delays state transitions by 5 seconds for smoother operation
 			sleep(5);
 			curState = nxtState;
@@ -226,19 +216,21 @@ void *stateMachine(void *data){
 		case State1:
 			if(printAllowed){
 				printf("-->West and east green.\n");
-				printf("-->all else red\n.");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			if (westRtTurnSens) {
 				nxtState = State7;
 			} else if (southVehSens){
 				nxtState = State2;
+			} else if (fM.trainApproach){
+				nxtState = State2;
 			}
 			break;
 		case State2:
 			if(printAllowed){
 				printf("-->West and east yellow.\n");
-				printf("-->all else red\n.");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			nxtState = State3;					// deal with delay in state transition processing
@@ -246,29 +238,27 @@ void *stateMachine(void *data){
 		case State3:
 			if(printAllowed){
 				printf("-->South green.\n");
-				printf("-->all else red\n.");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			if (fM.trainApproach == false){		// dont transistion if train approach true
-				if (westRtTurnSens) {
-					nxtState = State7;
-				} else if (southVehSens){
-					nxtState = State2;
+				if (westRtTurnSens || eastVehSens || westVehSens) {
+					nxtState = State4;
 				}
 			}
 			break;
 		case State4:
 			if(printAllowed){
-				printf("-->South Yellow\n");
-				printf("-->all else red\n.");
+				printf("-->South Yellow.\n");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			nxtState = State5;					// deal with delay in state transition processing
 			break;
 		case State5:
 			if(printAllowed){
-				printf("-->West and west right green\n");
-				printf("-->all else red\n.");
+				printf("-->West and west right green.\n");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			if (eastVehSens || southVehSens || fM.trainApproach) {
@@ -278,7 +268,7 @@ void *stateMachine(void *data){
 		case State6:
 			if(printAllowed){
 				printf("-->West and west right yellow.\n");
-				printf("-->all else red\n.");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			if (fM.trainApproach) {
@@ -290,7 +280,7 @@ void *stateMachine(void *data){
 		case State7:
 			if(printAllowed){
 				printf("-->West green and east yellow.\n");
-				printf("-->all else red\n.");
+				printf("-->all else red.\n");
 				printAllowed = false;
 			}
 			nxtState = State5;
@@ -302,8 +292,8 @@ void *stateMachine(void *data){
 			}
 			break;
 		}
+		pthread_mutex_unlock(&SENSOR_MUTEX);
 	}
-
 	return EXIT_SUCCESS;
 }
 
@@ -331,12 +321,13 @@ int main(void) {
 	initialiseComChannel();
 
 	// initialise threads (default for now maybe change to round robin)
-	pthread_t su, sm;
+	pthread_t su, sm, sp;
 	pthread_create(&su,NULL,statusUpdate, NULL);
 	pthread_create(&sm,NULL,stateMachine, NULL);
+	pthread_create(&sp,NULL,sensorProcessing, NULL);
+	while(1){
 
-	mq_unlink(sendMqueueLocation);
-	mq_unlink(rcvMqueueLocation);
+	}
 
 
 }
