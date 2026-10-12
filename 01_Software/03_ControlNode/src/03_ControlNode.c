@@ -50,9 +50,10 @@ bool timerRunning = false;
 struct updateMsg {				// message that gets sent to control with current status of system
 	char senderID[IDBuf];       // our data (unique id from client)
 	int currentState;			// current state of the state machine
-	bool sensorState;			// if vehicle/train is present or not (1/0)
 	int timeSinceLastChange;	// time since the state machine last changed state
-	int phaseState;				// ignore for now - implement if time later
+	bool carState;				// corresponding car event for each state
+	bool pedState;				// corresponding pedestrian event for each state
+	bool trainstate;
 };
 struct updateMsg uM;
 
@@ -133,6 +134,7 @@ int initialiseComChannel(void){
 	int rcvX1 = 0;				// rcv count
 	int rcvUI = 0;				// rcv count
 	while (!rcvgood){																		// while we havent received all messages
+		usleep(100000);																		// was exhibiting unpredictable behavior with out this
 		if (msgRcvStruct == msgrM){															// if an rM struct is received
 			pthread_mutex_lock(&sendQueueMutex);											// lock mutex critical section
 			msgRcvStruct = nomsg;															// reset enum to nomsg
@@ -160,7 +162,7 @@ int initialiseComChannel(void){
 		//	rcvgood = 1;																	// if we have update blocking variable and exit while loop
 		//	printf("Verified connection with all nodes!\n");
 		//}
-		if ((rcvI1 >= 2) && (rcvI2 >= 2)){					// Check for if we have received all expected responses
+		if ((rcvI1 >= 2) && (rcvI2 >= 2) && (rcvX1 >= 2)){					// Check for if we have received all expected responses
 			rcvgood = 1;																	// if we have update blocking variable and exit while loop
 			printf("Verified connection with all nodes!\n");
 		}
@@ -177,15 +179,15 @@ void systemHealth(void){
 	// get monotonic time (stores time in struct "now")
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
-	if (!strcmp(rM.senderID, "I1")){
+	if (!strcmp(uM.senderID, "I1")){
 		//printf("stat msg received from I1\n");
 		fflush(stdout);
 		hMI1.lastRcv = now.tv_sec;
-	} else if (!strcmp(rM.senderID, "I2")) {
+	} else if (!strcmp(uM.senderID, "I2")) {
 		hMI2.lastRcv = now.tv_sec;
-	} else if (!strcmp(rM.senderID, "X1")) {
+	} else if (!strcmp(uM.senderID, "X1")) {
 		hMX1.lastRcv = now.tv_sec;
-	} else if (!strcmp(rM.senderID, "UI")) {
+	} else if (!strcmp(uM.senderID, "UI")) {
 		hMUI.lastRcv = now.tv_sec;
 	}
 
@@ -209,15 +211,15 @@ void failState(char node[10]){
 		if (n == -1) {														// check for error with msg send
 			perror("mq_send");
 		}
-		n = mq_send(mqrI2, (char *)&cM, sizeof(cM), 0);				// Send message
+		n = mq_send(mqrI2, (char *)&cM, sizeof(cM), 0);						// Send message
 		if (n == -1) {														// check for error with msg send
 			perror("mq_send");
 		}
-		n = mq_send(mqrX1, (char *)&cM, sizeof(cM), 0);				// Send message
+		n = mq_send(mqrX1, (char *)&cM, sizeof(cM), 0);						// Send message
 		if (n == -1) {														// check for error with msg send
 			perror("mq_send");
 		}
-		n = mq_send(mqrUI, (char *)&cM, sizeof(cM), 0);				// Send message
+		n = mq_send(mqrUI, (char *)&cM, sizeof(cM), 0);						// Send message
 		if (n == -1) {														// check for error with msg send
 			perror("mq_send");
 		}
@@ -266,7 +268,7 @@ void *stateMachine(void *data){
 			fflush(stdout);
 			msgRcvStruct = nomsg;
 			systemHealth();
-			txUI();
+			//txUI();
 			break;
 		case msgcM:
 			// wont happen
@@ -298,17 +300,17 @@ void *sendQueue(void *data){
 		}
 		ssize_t n = mq_receive(mqs, rcvBuffer, sizeof(rcvBuffer), NULL);  		//wait for the message
 		//printf("-->received message in send quueue\n");
-		fflush(stdout);
+		//fflush(stdout);
 		pthread_mutex_lock(&sendQueueMutex);
 		//printf("entered mutex\n");
-		fflush(stdout);
+		//fflush(stdout);
 		if (n == -1) {															// error with msg rcv
 			perror("mq_receive");												// print error
 		} else if ((size_t)n == sizeof(uM)){									// compare rcv msg with uM length
 			memcpy(&uM, rcvBuffer, sizeof(uM));									// save rcv values in uM struct
 			msgRcvStruct = msguM;												// update enum
 			//printf("rcv msg from of struct uM from %s\n", uM.senderID);
-			fflush(stdout);
+			//fflush(stdout);
 		} else if ((size_t)n == sizeof(cM)){									// compare rcv msg with cM length
 			memcpy(&cM, rcvBuffer, sizeof(cM));									// save rcv values in cM struct
 			msgRcvStruct = msgcM;												// update enum
@@ -321,8 +323,10 @@ void *sendQueue(void *data){
 			memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
 			msgRcvStruct = msgrM;												// update enum
 			//printf("rcv msg from of struct rM\n");
+			//fflush(stdout);
 		} else {
-			printf("Unexpected message size");
+			printf("Unexpected message size\n");
+			fflush(stdout);
 		}
 		pthread_mutex_unlock(&sendQueueMutex);
 	}
@@ -344,21 +348,23 @@ void *healthMonitor(void *data){
 		// compare time rcv with time now
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		time = now.tv_sec - hMI1.lastRcv;
+		//printf("Time since last I1 msg: %d\n", time);
 		if(time>timeout){
 			failurecheck = true;
 			failState("I1");
 		}
 		time = now.tv_sec - hMI2.lastRcv;
+		//printf("Time since last I2 msg: %d\n", time);
 		if(time>timeout){
 			failurecheck = true;
 			failState("I2");
 		}
-		/*time = now.tv_sec - hMX1.lastRcv;
+		time = now.tv_sec - hMX1.lastRcv;
 		if(time>timeout){
 			failurecheck = true;
 			failState("X1");
 		}
-		time = now.tv_sec - hMUI.lastRcv;
+		/*time = now.tv_sec - hMUI.lastRcv;
 		if(time>timeout){
 			failurecheck = true;
 			failState("UI");
