@@ -24,15 +24,23 @@ const char * sendMqueueLocation = "/net/Control_Node/Send_queue";  			// one que
 const char * rcvMqueueLocation = "/net/Control_Node/xxx_rcv_queue"; 		// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
 char rcvBuffer[1000];														// receive message buffer
 
+enum msgRcv { 	nomsg,
+				msguM,
+				msgcM,
+				msgfM,
+				msgrM,
+};
+enum msgRcv msgRcvStruct;
 
 // ------------------------------------------ Structs ------------------------------------------ //
 
 struct updateMsg {				// message that gets sent to control with current status of system
 	char senderID[IDBuf];       // our data (unique id from client)
 	int currentState;			// current state of the state machine
-	bool sensorState;			// if vehicle/train is present or not (1/0)
 	int timeSinceLastChange;	// time since the state machine last changed state
-	int phaseState;				// ignore for now - implement if time later
+	bool carState;				// corresponding car event for each state
+	bool pedState;				// corresponding pedestrian event for each state
+	bool trainstate;
 };
 struct updateMsg uM;
 
@@ -61,6 +69,7 @@ mqd_t mqs, mqr;
 
 // mutexes
 pthread_mutex_t statusUpdateMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t rcvQueueMutex = PTHREAD_MUTEX_INITIALIZER;
 
 // ------------------------------------------ functions ------------------------------------------ //
 
@@ -84,9 +93,10 @@ int initialiseComChannel(void){
 			printf("-->connection to %s on control node confirmed!\n", sendMqueueLocation);
 			mqueueEstablished = 1;													// exit while loop
 		} else {																	// else no connection
-			//printf(">");															// just to show system is not frozen.
+			printf(">");															// just to show system is not frozen.
+			fflush(stdout);
 		}
-		//sleep(1);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
+		usleep(500000);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
 
 	// check connection to rcv queue
@@ -153,6 +163,38 @@ void *stateMachine(void *data){
 	return EXIT_SUCCESS;
 }
 
+// ################################################## //
+// ################ msg receive ##################### //
+// ################################################## //
+
+void *rcvQueue(void *data){
+	int alive = 1;
+	msgRcvStruct = nomsg;
+	while(alive){
+		ssize_t n = mq_receive(mqr, rcvBuffer, sizeof(rcvBuffer), NULL);  		//wait for the message
+		pthread_mutex_lock(&rcvQueueMutex);
+		if (n == -1) {															// error with msg rcv
+			perror("mq_receive");												// print error
+		} else if ((size_t)n == sizeof(uM)){									// compare rcv msg with uM length
+			memcpy(&uM, rcvBuffer, sizeof(uM));									// save rcv values in uM struct
+			msgRcvStruct = msguM;												// update enum
+		} else if ((size_t)n == sizeof(cM)){									// compare rcv msg with cM length
+			memcpy(&cM, rcvBuffer, sizeof(cM));									// save rcv values in cM struct
+			msgRcvStruct = msgcM;												// update enum
+		} else if ((size_t)n == sizeof(fM)){									// compare rcv msg with fM length
+			memcpy(&fM, rcvBuffer, sizeof(fM));									// save rcv values in fM struct
+			msgRcvStruct = msgfM;												// update enum
+		} else if ((size_t)n == sizeof(rM)){									// compare rcv msg with rM length
+			memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
+			msgRcvStruct = msgrM;												// update enum
+		} else {
+			printf("Unexpected message size");
+		}
+		pthread_mutex_unlock(&rcvQueueMutex);
+	}
+	return EXIT_SUCCESS;
+}
+
 // ------------------------------------------ Main Thread ------------------------------------------ //
 
 // ################################## //
@@ -174,7 +216,8 @@ int main(void) {
 	initialiseComChannel();
 
 	// initialise threads (default for now maybe change to round robin later if time)
-	pthread_t su, ip, op, sm;
+	pthread_t mr, su, ip, op, sm;
+	pthread_create(&mr,NULL,rcvQueue, NULL);
 	pthread_create(&su,NULL,statusUpdate, NULL);
 	pthread_create(&ip,NULL,inputProcessing, NULL);
 	pthread_create(&op,NULL,outputProcessing, NULL);
