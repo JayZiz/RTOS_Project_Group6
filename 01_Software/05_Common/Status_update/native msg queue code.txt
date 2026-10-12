@@ -1,0 +1,87 @@
+int controlLocalCom(void){
+	// control node -> local node communication
+	FILE *fp;				// file pointer
+
+	// create channel
+	cD.CID = ChannelCreate(_NTO_CHF_DISCONNECT); // _NTO_CHF_DISCONNECT flag used to allow detach
+	if (cD.CID == -1)
+	{
+		printf("\nFailed to create communication channel on server\n");
+		return EXIT_FAILURE;
+	}
+
+	// write CID and PID to local file
+	fp = fopen("tmp/myNodeInfo.info","w");					// create file at location specified (does this need to be unique for each node?)
+	if (fp != NULL){										// check for if file was created properly
+		cD.PID = getpid();									// get the PID of the local proccess
+		printf("PID = %d,   CID = %d\n",cD.PID, cD.CID);	// print to terminal
+		fwrite(&cD, sizeof(struct connectionData), 1, fp);	// write struct data to file
+		printf("Successfully wrote node information\n");
+		fclose(fp);											// force process to close file
+	} else {
+		printf("Error with opening file\n");
+		return EXIT_FAILURE;
+	}
+
+
+	// set up reply (check)
+	rM.hdr.type = 0x01;
+	rM.hdr.subtype = 0x00;
+
+	// wait for communication confirmation from server
+	int rcvid = MsgReceive(cD.CID, &cCD, sizeof(struct connectionData), NULL); 	//waits here for msg (do we need a timeout?)
+	if (rcvid == -1) { 														// Error condition, exit
+	   printf("\nFailed to MsgReceive\n");
+	   return EXIT_FAILURE;
+	} else if (rcvid == 0) {												// check for pulse cmd? need to check how this works
+		printf("response unsupported\n");									// add functions for this maybe?
+		return EXIT_FAILURE;
+	} else if (rcvid > 0){													// if msg received then com established
+		printf("Control Node confirmed connection success/n");				// PID and CID get written to controlConnectionData (shouldn't need to refresh)
+		fflush(stdout);														// idk if this is needed
+		printf("    -----> replying with: '%s'\n",rM.buf);					// might remove this
+		MsgReply(rcvid, EOK, &rM, sizeof(rM));								// reply to control to confirm msg received. (update so we send control node what this node is incharge of?)
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int localControlCom(void){
+	// local node -> control node communication
+	FILE *fp;
+
+	fp = fopen("tmp/myNodeInfo.info", "r");
+	if(fp != NULL) {
+		while (read_data(fp, &cCD) != 0){
+			printf("PID=%d", cCD.PID);
+			printf("  CID=%d", cCD.CID);
+			printf("\n");
+		}
+		fclose(fp);
+		// Connect to channel
+		servercoid = ConnectAttach(ND_LOCAL_NODE, cCD.PID, cCD.CID, _NTO_SIDE_CHANNEL, 0);
+		if (servercoid == -1)
+		{
+			printf("\n    ERROR, could not connect to server!\n\n");
+			return EXIT_FAILURE;
+		}
+
+		printf("Connection established to process with PID:%d, Ch:%d\n", cCD.PID, cCD.CID);
+
+		//reply
+
+		printf("Sending confirmation that Client has established connnection successfully to server\n");	// empty packet
+
+		if (MsgSend(servercoid, &cM, sizeof(cM), &rM, sizeof(rM)) == -1) {
+			printf(" Error data NOT sent to server\n");
+				// maybe we did not get a reply
+			return EXIT_FAILURE;
+		}
+		else { // now process the reply
+			printf("Server Acknowledged connection\n");
+			printf("\n");
+		}
+		return EXIT_SUCCESS;
+	}
+	return EXIT_FAILURE;
+}
