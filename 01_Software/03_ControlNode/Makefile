@@ -1,4 +1,4 @@
-ARTIFACT = NetworkNode
+ARTIFACT = 03_ControlNode
 
 #Build architecture/variant string, possible values: x86, armv7le, etc...
 PLATFORM ?= x86_64
