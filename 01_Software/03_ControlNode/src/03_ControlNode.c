@@ -318,7 +318,8 @@ void *sendQueue(void *data){
 		} else if ((size_t)n == sizeof(fM)){									// compare rcv msg with fM length
 			memcpy(&fM, rcvBuffer, sizeof(fM));									// save rcv values in fM struct
 			msgRcvStruct = msgfM;												// update enum
-			//printf("rcv msg from of struct fM\n");
+			printf("rcv msg from of struct fM by %s\n", fM.senderID);
+			printf("train approach = %d\n", fM.trainApproach);
 		} else if ((size_t)n == sizeof(rM)){									// compare rcv msg with rM length
 			memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
 			msgRcvStruct = msgrM;												// update enum
