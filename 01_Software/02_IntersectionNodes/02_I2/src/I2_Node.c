@@ -35,6 +35,14 @@ enum states { 	State1,
 enum states curState;
 enum states nxtState;
 
+enum msgRcv { 	nomsg,
+				msguM,
+				msgcM,
+				msgfM,
+				msgrM,
+};
+enum msgRcv msgRcvStruct;
+
 bool alive = true;
 bool westVehSens = false;
 bool westRtTurnSens = false;
@@ -72,9 +80,13 @@ struct replyMsg {				// the reply message for when a message is received from co
 };
 struct replyMsg rM;
 
+// queues
 mqd_t mqs, mqr;
 
+// mutexes
 pthread_mutex_t SENSOR_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t statusUpdateMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t rcvQueueMutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 // ------------------------------------------ functions ------------------------------------------ //
@@ -83,7 +95,7 @@ pthread_mutex_t SENSOR_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 // ############## Establish communications with control Node ############## //
 // ######################################################################## //
 int initialiseComChannel(void){
-	// using mqueue as the minimum, upgrade to native message passing if time\
+	// using mqueue as the minimum, upgrade to native message passing if time
 	// just really an initial check to see if queue exists before starting the system up
 	// check connection to send queue
 	printf("Connecting to %s queue on control node, please wait\n" ,sendMqueueLocation);
@@ -136,7 +148,11 @@ int initialiseComChannel(void){
 void *statusUpdate(void *data){																					// allow us to terminate if need be (currently unused)
 	while(alive){
 		sleep(1);																							// sleep for 1 second (should replace with HW timer)
-		mq_send(mqs, (const char*)&uM, sizeof(uM), 0);
+		pthread_mutex_lock(&statusUpdateMutex);
+		if (mq_send(mqs, (const char*)&uM, sizeof(uM), 0) == -1){
+			cM.failState = true;																			// control node update this when connection re-established
+		}
+		pthread_mutex_unlock(&statusUpdateMutex);
 	}
 	return EXIT_SUCCESS;
 }
@@ -195,6 +211,38 @@ void *sensorProcessing(void *data){																					// allow us to terminate
 			fflush(stdout);
 		}
 		pthread_mutex_unlock(&SENSOR_MUTEX);
+	}
+	return EXIT_SUCCESS;
+}
+
+// ################################################## //
+// ################ msg receive ##################### //
+// ################################################## //
+
+void *rcvQueue(void *data){
+	int alive = 1;
+	msgRcvStruct = nomsg;
+	while(alive){
+		ssize_t n = mq_receive(mqr, rcvBuffer, sizeof(rcvBuffer), NULL);  		//wait for the message
+		pthread_mutex_lock(&rcvQueueMutex);
+		if (n == -1) {															// error with msg rcv
+			perror("mq_receive");												// print error
+		} else if ((size_t)n == sizeof(uM)){									// compare rcv msg with uM length
+			memcpy(&uM, rcvBuffer, sizeof(uM));									// save rcv values in uM struct
+			msgRcvStruct = msguM;												// update enum
+		} else if ((size_t)n == sizeof(cM)){									// compare rcv msg with cM length
+			memcpy(&cM, rcvBuffer, sizeof(cM));									// save rcv values in cM struct
+			msgRcvStruct = msgcM;												// update enum
+		} else if ((size_t)n == sizeof(fM)){									// compare rcv msg with fM length
+			memcpy(&fM, rcvBuffer, sizeof(fM));									// save rcv values in fM struct
+			msgRcvStruct = msgfM;												// update enum
+		} else if ((size_t)n == sizeof(rM)){									// compare rcv msg with rM length
+			memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
+			msgRcvStruct = msgrM;												// update enum
+		} else {
+			printf("Unexpected message size");
+		}
+		pthread_mutex_unlock(&rcvQueueMutex);
 	}
 	return EXIT_SUCCESS;
 }
@@ -297,6 +345,33 @@ void *stateMachine(void *data){
 	return EXIT_SUCCESS;
 }
 
+
+void *inputProcessing(void *data){
+	while(alive){
+			switch (msgRcvStruct){		// main purpose atm to reset msg to no msg (might use later for more functionality)
+			case nomsg:
+				// do nothing
+				break;
+			case msguM:
+				// do nothing
+				msgRcvStruct = nomsg;
+				break;
+			case msgcM:
+				// do nothing
+				msgRcvStruct = nomsg;
+				break;
+			case msgfM:
+				// do nothing
+				msgRcvStruct = nomsg;
+				break;
+			case msgrM:
+				// deal with as we go
+				msgRcvStruct = nomsg;
+				break;
+			}
+		}
+		return EXIT_SUCCESS;
+}
 // ------------------------------------------ Main (Thread) ------------------------------------------ //
 
 // ################################## //
@@ -321,10 +396,12 @@ int main(void) {
 	initialiseComChannel();
 
 	// initialise threads (default for now maybe change to round robin)
-	pthread_t su, sm, sp;
+	pthread_t su, sm, sp, rq;
 	pthread_create(&su,NULL,statusUpdate, NULL);
 	pthread_create(&sm,NULL,stateMachine, NULL);
 	pthread_create(&sp,NULL,sensorProcessing, NULL);
+	pthread_create(&rq,NULL,rcvQueue, NULL);
+
 	while(1){
 
 	}
