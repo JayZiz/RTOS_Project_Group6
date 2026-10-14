@@ -12,32 +12,19 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 
-// ------------------------------------------ Definitions ------------------------------------------ //
 
 #define replyBuf 10
 #define IDBuf 10
-#define receiverBuf 10
 #define ID "UI"					// define Node ID here for each node (I1 used as an example)
 
-// ------------------------------------------ Global Variables ------------------------------------------ //
 
-const char *sendMqueueLocation =
-    "/net/Control_Node/Send_queue";
-
-const char *rcvMqueueLocation =
-    "/net/Control_Node/UI_rcv_queue"; 		// unique queue on control node for sending data to this node (xxx = node host name "need to discuss this")
+const char * sendMqueueLocation = "/net/Control_Node/Send_queue";  			// one queue on control node for receiving data from this node
+const char * rcvMqueueLocation = "/net/Control_Node/UI_rcv_queue";
 char rcvBuffer[1000];														// receive message buffer
 
-enum msgRcv { 	nomsg,
-				msguM,
-				msgcM,
-				msgfM,
-				msgrM,
-};
-enum msgRcv msgRcvStruct;
 
-// ------------------------------------------ Structs ------------------------------------------ //
 
 struct updateMsg {				// message that gets sent to control with current status of system
 	char senderID[IDBuf];       // our data (unique id from client)
@@ -79,15 +66,49 @@ struct updateMsg i1Status, i2Status, x1Status;
 bool gotI1 = false, gotI2 = false, gotX1 = false;
 bool failReceived = false;
 bool failValue = false;
+pthread_cond_t statusChanged = PTHREAD_COND_INITIALIZER;
+bool newStatus = false;
 
 
-// ------------------------------------------ functions ------------------------------------------ //
+// State names - confirm these match the I1, I2 and X1 enums.
+const char *getI1StateName(int state){
+    switch (state){
+        case 0: return "ALL RED";
+        case 1: return "R3 GREEN";
+        case 2: return "R3 YELLOW";
+        case 3: return "R1 GREEN";
+        case 4: return "R1 YELLOW";
+        case 5: return "WAITING FOR TRAIN";
+        case 6: return "FAIL";
+        default: return "UNKNOWN";
+    }
+}
 
-// ######################################################################## //
-// ############## Establish communications with control Node ############## //
-// ######################################################################## //
+const char *getI2StateName(int state){
+    switch (state){
+        case 0: return "ALL RED";
+        case 1: return "R3 GREEN";
+        case 2: return "R3 YELLOW";
+        case 3: return "R2 GREEN";
+        case 4: return "R2 YELLOW";
+        case 5: return "WAITING FOR TRAIN";
+        case 6: return "FAIL";
+        default: return "UNKNOWN";
+    }
+}
+
+const char *getX1StateName(int state){
+    switch (state){
+        case 0: return "NORMAL";
+        case 1: return "TRAIN CROSSING";
+        case 2: return "FAILSAFE";
+        default: return "UNKNOWN";
+    }
+}
+
+
 int initialiseComChannel(void){
-	// using mqueue as the minimum, upgrade to native message passing if time
+	// Connect to the queues created by the control node.
 	// just really an initial check to see if queue exists before starting the system up
 	// check connection to send queue
 	printf("Connecting to %s queue on control node, please wait\n" ,sendMqueueLocation);
@@ -99,7 +120,7 @@ int initialiseComChannel(void){
 			if (mq_send(mqs,(const char*)&rM, sizeof(rM), 0) == -1){
 				perror("mq_send");
 				return EXIT_FAILURE;
-			}						// send confirmation to control (do we need to check control get this msg lmao)
+			}
 			printf("-->connection to %s on control node confirmed!\n", sendMqueueLocation);
 			mqueueEstablished = 1;													// exit while loop
 		} else {																	// else no connection
@@ -123,7 +144,6 @@ int initialiseComChannel(void){
 			printf("-->connection to %s on control node confirmed!\n", rcvMqueueLocation);
 			mqueueEstablished = 1;													// exit while loop
 		} else {																	// else no connection
-			//printf(">");															// just to show system is not frozen. implement another time, keeps glitching out
 		}
 		//sleep(1);																	// update to hw timer maybe (probably doesnt matter at this stage in the code)
 	}
@@ -131,25 +151,18 @@ int initialiseComChannel(void){
 	return EXIT_SUCCESS;
 }
 
-// ------------------------------------------ Threads ------------------------------------------ //
 
-// ################################################## //
-// ############## Status Update Thread ############## //
-// ################################################## //
-void *statusUpdate(void *data){							// might update to have higher priority later
-	bool alive = true;									// allow us to terminate if need be (currently unused)
-	while(alive){
-		sleep(1);										// sleep for 1 second, i will replace with HW timer later
+void *statusUpdate(void *data){
+	while(1){
+		sleep(1);
 		pthread_mutex_lock(&statusUpdateMutex);				// lock for status update struct use (maybe change to add time limit later)
-		mq_send(mqs, (char *)&uM, sizeof(uM), 0);		// send status update to control node
+		if (mq_send(mqs, (char *)&uM, sizeof(uM), 0) == -1)
+            perror("mq_send status");
 		pthread_mutex_unlock(&statusUpdateMutex);			// unlock to allow writing to status update struct by other threads
 	}
 	return NULL;
 }
 
-// ################################################## //
-// ############## Input Thread ###################### //
-// ################################################## //
 void *inputProcessing(void *data){
     char command[20];
     printf("UI terminal: enter r to request fail reset (0)\n");
@@ -168,31 +181,41 @@ void *inputProcessing(void *data){
 }
 
 
-// ################################################## //
-// ############## Output Thread ##################### //
-// ################################################## //
 void *outputProcessing(void *data){
-    /* Output is printed by the receive thread whenever a message arrives. */
+    while (1) {
+        pthread_mutex_lock(&rcvQueueMutex);
+        while (!newStatus)
+            pthread_cond_wait(&statusChanged, &rcvQueueMutex);
+        newStatus = false;
+
+        printf("\n--- SYSTEM STATUS ---\n");
+        if (gotI1) printf("I1 state=%s time=%d car=%d ped=%d train=%d\n",
+            getI1StateName(i1Status.currentState), i1Status.timeSinceLastChange,
+            i1Status.carState, i1Status.pedState, i1Status.trainstate);
+        else printf("I1: waiting for update\n");
+        if (gotI2) printf("I2 state=%s time=%d car=%d ped=%d train=%d\n",
+            getI2StateName(i2Status.currentState), i2Status.timeSinceLastChange,
+            i2Status.carState, i2Status.pedState, i2Status.trainstate);
+        else printf("I2: waiting for update\n");
+        if (gotX1) printf("X1 state=%s time=%d car=%d ped=%d train=%d\n",
+            getX1StateName(x1Status.currentState), x1Status.timeSinceLastChange,
+            x1Status.carState, x1Status.pedState, x1Status.trainstate);
+        else printf("X1: waiting for update\n");
+        if (failReceived) printf("Fail state: %d\n", failValue ? 1 : 0);
+        else printf("Fail state: waiting for control update\n");
+        fflush(stdout);
+        pthread_mutex_unlock(&rcvQueueMutex);
+    }
     return NULL;
 }
 
 
-// ################################################## //
-// ############## State Machine ##################### //
-// ################################################## //
-void *stateMachine(void *data){
 
-	return NULL;
-}
-
-// ################################################## //
-// ################ msg receive ##################### //
-// ################################################## //
 
 void *rcvQueue(void *data){
     while (1) {
         ssize_t n = mq_receive(mqr, rcvBuffer, sizeof(rcvBuffer), NULL);
-        if (n == -1) { perror("mq_receive"); continue; }
+        if (n == -1) { perror("mq_receive"); sleep(1); continue; }
         pthread_mutex_lock(&rcvQueueMutex);
         if ((size_t)n == sizeof(uM)) {
             struct updateMsg received;
@@ -210,33 +233,18 @@ void *rcvQueue(void *data){
             memcpy(&rM, rcvBuffer, sizeof(rM));
         } else {
             printf("Unexpected message size: %ld\n", (long)n);
+            pthread_mutex_unlock(&rcvQueueMutex);
+            continue;
         }
-        printf("\n--- SYSTEM STATUS ---\n");
-        if (gotI1) printf("I1 state=%d time=%d car=%d ped=%d train=%d\n",
-            i1Status.currentState, i1Status.timeSinceLastChange,
-            i1Status.carState, i1Status.pedState, i1Status.trainstate);
-        else printf("I1: waiting for update\n");
-        if (gotI2) printf("I2 state=%d time=%d car=%d ped=%d train=%d\n",
-            i2Status.currentState, i2Status.timeSinceLastChange,
-            i2Status.carState, i2Status.pedState, i2Status.trainstate);
-        else printf("I2: waiting for update\n");
-        if (gotX1) printf("X1 state=%d time=%d car=%d ped=%d train=%d\n",
-            x1Status.currentState, x1Status.timeSinceLastChange,
-            x1Status.carState, x1Status.pedState, x1Status.trainstate);
-        else printf("X1: waiting for update\n");
-        if (failReceived) printf("Fail state: %d\n", failValue ? 1 : 0);
-        else printf("Fail state: waiting for control update\n");
-        fflush(stdout);
+        // Tell the display thread that the status has changed.
+        newStatus = true;
+        pthread_cond_signal(&statusChanged);
         pthread_mutex_unlock(&rcvQueueMutex);
     }
     return NULL;
 }
 
-// ------------------------------------------ Main Thread ------------------------------------------ //
 
-// ################################## //
-// ############## MAIN ############## //
-// ################################## //
 int main(void) {
 	// define this node for sending messages
 		// update message
@@ -253,12 +261,12 @@ int main(void) {
 	if (initialiseComChannel() != EXIT_SUCCESS) return EXIT_FAILURE;
 
 	// initialise threads (default for now maybe change to round robin later if time)
-	pthread_t mr, su, ip;
+	pthread_t mr, su, ip, op;
 	pthread_create(&mr,NULL,rcvQueue, NULL);
 	pthread_create(&su,NULL,statusUpdate, NULL);
 	pthread_create(&ip,NULL,inputProcessing, NULL);
-	/* Output printed in rcvQueue. */
-	/* No separate UI state machine needed. */
+	pthread_create(&op,NULL,outputProcessing, NULL);
+	
 	pthread_join(mr, NULL);
 	return EXIT_SUCCESS;
 }
