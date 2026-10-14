@@ -968,6 +968,8 @@ void I2_fsm_traffic(traffic_t *traffic_fsm)
 			{
 				traffic_fsm->state_e = STATE_R2_GREEN;
 				update_state(traffic_fsm);
+				traffic_fsm->car_e = SENSOR_NONE;
+				traffic_fsm->ped_e = PED_NONE;
 			}
 		}
 
@@ -979,6 +981,8 @@ void I2_fsm_traffic(traffic_t *traffic_fsm)
 			{
 				traffic_fsm->state_e = STATE_R3_GREEN;
 				update_state(traffic_fsm);
+				traffic_fsm->car_e = SENSOR_NONE;
+				traffic_fsm->ped_e = PED_NONE;
 			}
 		}
 
@@ -1019,6 +1023,8 @@ void I2_fsm_traffic(traffic_t *traffic_fsm)
 			{
 				traffic_fsm->state_e = STATE_R3_YELLOW;
 				update_state(traffic_fsm);
+				traffic_fsm->car_e = SENSOR_NONE;
+				traffic_fsm->ped_e = PED_NONE;
 			}
 		}
 
@@ -1082,6 +1088,8 @@ void I2_fsm_traffic(traffic_t *traffic_fsm)
 			{
 				traffic_fsm->state_e = STATE_R2_YELLOW;
 				update_state(traffic_fsm);
+				traffic_fsm->car_e = SENSOR_NONE;
+				traffic_fsm->ped_e = PED_NONE;
 			}
 		}
 
