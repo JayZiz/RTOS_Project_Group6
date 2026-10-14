@@ -1,1 +1,1 @@
-build/x86_64-debug/src/TrainNode.o: src/TrainNode.c
+build/x86_64-debug/src/TrainNode.o: src/TrainNode.c src/CommonMessages.h
