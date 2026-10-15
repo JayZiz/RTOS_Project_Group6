@@ -1,7 +1,440 @@
-#include <stdio.h>
-#include <stdlib.h>
+	/*
+	 * Control Node Process
+	 * Created by: Jaime Zizman
+	 */
 
-int main(void) {
-	puts("Hello World!!!"); /* prints Hello World!!! */
-	return EXIT_SUCCESS;
-}
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <stdbool.h>
+	#include <errno.h>
+	#include <pthread.h>
+	#include <mqueue.h>
+	#include <sys/stat.h>
+
+	// ------------------------------------------ Definitions ------------------------------------------ //
+
+	#define replyBuf 10
+	#define IDBuf 10
+	#define receiverBuf 10
+	#define ID "C1"					// define Node ID here for each node
+	#define Q_FLAGS O_RDWR | O_CREAT | O_EXCL
+	#define Q_Mode S_IRUSR | S_IWUSR
+	#define msgSz 1000
+	#define timeout 3 // seconds
+
+	// ------------------------------------------ Global Variables ------------------------------------------ //
+
+	int alive = 1;											// variable to trigger shutdown
+	const char *sendMqueueLocation = "/Send_queue";  		// one queue on control node for receiving data from this node
+	const char *I1rcvMqueueLocation = "/I1_rcv_queue"; 		// unique queue on control node for sending data to this node
+	const char *I2rcvMqueueLocation = "/I2_rcv_queue"; 		// unique queue on control node for sending data to this node
+	const char *X1rcvMqueueLocation = "/X1_rcv_queue"; 		// unique queue on control node for sending data to this node
+	const char *UIrcvMqueueLocation = "/UI_rcv_queue"; 		// unique queue on control node for sending data to this node
+	char rcvBuffer[1000];									// receive message buffer
+	const char *nodeIDs[4] = {									// might be able to simplify some of the functions using this, might implement later if time
+			"I1", "I2", "X1", "UI"
+	};
+
+	enum msgRcv { 	nomsg,
+					msguM,
+					msgcM,
+					msgfM,
+					msgrM,
+	};
+	enum msgRcv msgRcvStruct;
+
+	bool timerRunning = false;
+
+	// ------------------------------------------ Structs ------------------------------------------ //
+
+	struct updateMsg {				// message that gets sent to control with current status of system
+		char senderID[IDBuf];       // our data (unique id from client)
+		int currentState;			// current state of the state machine
+		int timeSinceLastChange;	// time since the state machine last changed state
+		int carState;				// corresponding car event for each state
+		int pedState;				// corresponding pedestrian event for each state
+		bool trainstate;
+	};
+	struct updateMsg uM;
+
+	struct controlMsg {				// message received form control
+		char senderID[IDBuf];       // control data (unique id)
+		bool failState;				// force fail state
+	};
+	struct controlMsg cM;
+
+	struct ForwardMsg {				// message received form control
+		char senderID[IDBuf];       // control data (unique id)
+		char RecevierID[IDBuf];		// where we are sending the message
+		int currentState;			// current state of state machine
+		bool trainApproach;			// train approaching or not
+	};
+	struct ForwardMsg fM;
+
+	struct replyMsg {				// the reply message for when a message is received from control
+		char senderID[IDBuf];
+		char buf[replyBuf];			// Message we send back to clients to tell them the messages was processed correctly.
+	};
+	struct replyMsg rM;
+
+	struct healthMon {				// the reply message for when a message is received from control
+		bool failed;
+		int lastRcv;
+	};
+	struct healthMon hMI1, hMI2, hMX1, hMUI;
+
+	// queues
+	mqd_t mqs, mqrI1, mqrI2, mqrX1, mqrUI;
+
+	// mutexes
+	pthread_mutex_t statusUpdateMutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t sendQueueMutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_cond_t msgRcvCond = PTHREAD_COND_INITIALIZER;
+
+	// ------------------------------------------ functions ------------------------------------------ //
+	void *sendQueue(void *data);
+
+	// ######################################################################## //
+	// ############## Establish communications with control Node ############## //
+	// ######################################################################## //
+	int initialiseComChannel(void){
+		// set up queue attributes
+		struct  mq_attr  attr;
+		attr.mq_maxmsg = 100;		// max message queue amount
+		attr.mq_msgsize = msgSz;	// max message size (make dynamic maybe???)
+		attr.mq_flags = 0;
+		attr.mq_curmsgs = 0;
+		attr.mq_sendwait = 0;
+		attr.mq_recvwait = 0;
+		struct mq_attr * my_attr = &attr;
+
+		printf("Opening queues for communication between nodes.\n");
+
+		mqs	  = mq_open(sendMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open send queue
+		mqrI1 = mq_open(I1rcvMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open rcv queue for Node I1
+		mqrI2 = mq_open(I2rcvMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open rcv queue for Node I2
+		mqrX1 = mq_open(X1rcvMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open rcv queue for Node X1
+		mqrUI = mq_open(UIrcvMqueueLocation, Q_FLAGS, Q_Mode, my_attr);		// open rcv queue for Node UI
+
+		if (mqs == -1 || mqrI1 == -1 || mqrI2 == -1 || mqrX1 == -1 || mqrUI == -1){										// check for failure opening queue
+			perror("mq_open");
+			return EXIT_FAILURE;
+		} else {
+			printf("All queues successfully opened, verifying connection with nodes.\n");
+		}
+		// start sendqueue thread now that queues are created
+		pthread_t sq;
+		pthread_create(&sq,NULL,sendQueue, NULL);
+
+
+		//loop until all rcv good from nodes
+		bool rcvgood = false;		// variable to block until we receive all the msg we are expecting
+		int rcvI1 = 0;				// rcv count
+		int rcvI2 = 0;				// rcv count
+		int rcvX1 = 0;				// rcv count
+		int rcvUI = 0;				// rcv count
+		while (!rcvgood){																		// while we havent received all messages
+			usleep(100000);																		// was exhibiting unpredictable behavior with out this
+			if (msgRcvStruct == msgrM){															// if an rM struct is received
+				pthread_mutex_lock(&sendQueueMutex);											// lock mutex critical section
+				msgRcvStruct = nomsg;															// reset enum to nomsg
+				if ((!strcmp(rM.buf, "SEND_EOK")) || (!strcmp(rM.buf, "RCV_EOK"))) {			// check for expected msg
+					printf("-->received confirmation: %s from node %s\n", rM.buf, rM.senderID);
+				} else {																		// else unexpected msg (check worker node code)
+					printf("-->unexpected response %s from node %s\n", rM.buf, rM.senderID);
+				}
+				if (!strcmp(rM.senderID, "I1")){												//check for sender ID
+					rcvI1++;																	// if I1 then increment rcv count
+				} else if (!strcmp(rM.senderID, "I2")) {										//check for sender ID
+					rcvI2++;																	// if I2 then increment rcv count
+				} else if (!strcmp(rM.senderID, "X1")) {										//check for sender ID
+					rcvX1++;																	// if X1 then increment rcv count
+				} else if (!strcmp(rM.senderID, "UI")) {										//check for sender ID
+					rcvUI++;																	// if UI then increment rcv count
+				} else {																		// else unexpected ID, check worker node code
+					printf("Error --> Unexpected sender ID\n");
+				}
+				pthread_mutex_unlock(&sendQueueMutex);											// unlock mutex (sendQueue thread can now take mutex and update struct for next msg)
+			} else if (!(msgRcvStruct == nomsg)) {
+				msgRcvStruct = nomsg;
+			}
+			//if ((rcvI1 >= 2) && (rcvI2 >= 2) && (rcvX1 >= 2) && (rcvUI >= 2)){					// Check for if we have received all expected responses
+			//	rcvgood = 1;																	// if we have update blocking variable and exit while loop
+			//	printf("Verified connection with all nodes!\n");
+			//}
+			if ((rcvI1 >= 2) && (rcvI2 >= 2) && (rcvX1 >= 2)){					// Check for if we have received all expected responses
+				rcvgood = 1;																	// if we have update blocking variable and exit while loop
+				printf("Verified connection with all nodes!\n");
+			}
+
+		}
+		// might want to add timeout for above, will also need to add a retry on the worker nodes
+		// above code could have a better implementation, need to check for send and rcv independently in case of resend from worker node
+
+
+		return EXIT_SUCCESS;
+	}
+
+	void systemHealth(void){
+		// get monotonic time (stores time in struct "now")
+		struct timespec now;
+		clock_gettime(CLOCK_MONOTONIC, &now);
+		if (!strcmp(uM.senderID, "I1")){
+			//printf("stat msg received from I1\n");
+			fflush(stdout);
+			hMI1.lastRcv = now.tv_sec;
+		} else if (!strcmp(uM.senderID, "I2")) {
+			hMI2.lastRcv = now.tv_sec;
+		} else if (!strcmp(uM.senderID, "X1")) {
+			hMX1.lastRcv = now.tv_sec;
+		} else if (!strcmp(uM.senderID, "UI")) {
+			hMUI.lastRcv = now.tv_sec;
+		}
+
+	}
+
+	void txUI(void){
+		ssize_t n = mq_send(mqrUI, (char *)&uM, sizeof(uM), 0);				// Send message to UI
+		if (n == -1) {														// check for error with msg send
+			perror("mq_send");
+		}
+	}
+
+	void failState(char node[10]){
+		// set cM struct to failed = true and send to nodes
+		// wait for rx from dead node
+		// cont operation when received
+		if(cM.failState == false){
+			cM.failState = true;
+			printf("Error with node %s status message\n", node);
+			ssize_t n = mq_send(mqrI1, (char *)&cM, sizeof(cM), 0);				// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+			n = mq_send(mqrI2, (char *)&cM, sizeof(cM), 0);						// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+			n = mq_send(mqrX1, (char *)&cM, sizeof(cM), 0);						// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+			n = mq_send(mqrUI, (char *)&cM, sizeof(cM), 0);						// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+		}
+	}
+
+	void messageForwarding(void){
+		if (!strcmp(fM.RecevierID, "I1")){
+			ssize_t n = mq_send(mqrI1, (char *)&fM, sizeof(fM), 0);				// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+		} else if (!strcmp(fM.RecevierID, "I2")) {
+			ssize_t n = mq_send(mqrI2, (char *)&fM, sizeof(fM), 0);				// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+		} else if (!strcmp(fM.RecevierID, "X1")) {
+			ssize_t n = mq_send(mqrX1, (char *)&fM, sizeof(fM), 0);				// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+		} else if (!strcmp(fM.RecevierID, "UI")) {
+			ssize_t n = mq_send(mqrUI, (char *)&fM, sizeof(fM), 0);				// Send message
+			if (n == -1) {														// check for error with msg send
+				perror("mq_send");
+			}
+		}
+	}
+
+	// ------------------------------------------ Threads ------------------------------------------ //
+
+
+	// ################################################## //
+	// ############## State Machine ##################### //
+	// ################################################## //
+	void *stateMachine(void *data){
+		while(alive){
+			switch (msgRcvStruct){
+			case nomsg:
+				// do nothing???
+				break;
+			case msguM:
+				// update health check and send to UI
+				//printf("state machine entered msguM\n");
+				fflush(stdout);
+				msgRcvStruct = nomsg;
+				systemHealth();
+				//txUI();
+				break;
+			case msgcM:
+				// wont happen
+				msgRcvStruct = nomsg;
+				break;
+			case msgfM:
+				// forward to rcvID
+				messageForwarding();
+				msgRcvStruct = nomsg;
+				break;
+			case msgrM:
+				// deal with as we go
+				msgRcvStruct = nomsg;
+				break;
+			}
+		}
+		return EXIT_SUCCESS;
+	}
+
+	// ################################################## //
+	// ############ Monitor send queue ################## //
+	// ################################################## //
+	void *sendQueue(void *data){
+		msgRcvStruct = nomsg;
+		while(alive){
+			while(msgRcvStruct != nomsg){
+				// wait for msg to be consumed (idk if i need but)
+				__asm("NOP");
+			}
+			ssize_t n = mq_receive(mqs, rcvBuffer, sizeof(rcvBuffer), NULL);  		//wait for the message
+			//printf("-->received message in send quueue\n");
+			//fflush(stdout);
+			pthread_mutex_lock(&sendQueueMutex);
+			//printf("entered mutex\n");
+			//fflush(stdout);
+			if (n == -1) {															// error with msg rcv
+				perror("mq_receive");												// print error
+			} else if ((size_t)n == sizeof(uM)){									// compare rcv msg with uM length
+				memcpy(&uM, rcvBuffer, sizeof(uM));									// save rcv values in uM struct
+				msgRcvStruct = msguM;												// update enum
+				//printf("rcv msg from of struct uM from %s\n", uM.senderID);
+				//fflush(stdout);
+			} else if ((size_t)n == sizeof(cM)){									// compare rcv msg with cM length
+				memcpy(&cM, rcvBuffer, sizeof(cM));									// save rcv values in cM struct
+				msgRcvStruct = msgcM;												// update enum
+				//printf("rcv msg from of struct cM\n");
+			} else if ((size_t)n == sizeof(fM)){									// compare rcv msg with fM length
+				memcpy(&fM, rcvBuffer, sizeof(fM));									// save rcv values in fM struct
+				msgRcvStruct = msgfM;												// update enum
+				printf("rcv msg from of struct fM by %s\n", fM.senderID);
+				printf("train approach = %d\n", fM.trainApproach);
+			} else if ((size_t)n == sizeof(rM)){									// compare rcv msg with rM length
+				memcpy(&rM, rcvBuffer, sizeof(rM));									// save rcv values in rM struct
+				msgRcvStruct = msgrM;												// update enum
+				//printf("rcv msg from of struct rM\n");
+				//fflush(stdout);
+			} else {
+				printf("Unexpected message size\n");
+				memcpy(&uM, rcvBuffer, sizeof(uM));
+				printf("from Node: %s\n", uM.senderID);
+				fflush(stdout);
+			}
+			pthread_mutex_unlock(&sendQueueMutex);
+		}
+		return EXIT_SUCCESS;
+	}
+
+	void *healthMonitor(void *data){
+		int time;
+		struct timespec now;
+		// initial time so its not comparing garbage memeory
+		clock_gettime(CLOCK_MONOTONIC, &now);
+		hMI1.lastRcv = now.tv_sec;
+		hMI2.lastRcv = now.tv_sec;
+		hMX1.lastRcv = now.tv_sec;
+		hMUI.lastRcv = now.tv_sec;
+		while (alive){
+			usleep(500);
+			bool failurecheck = false;
+			// compare time rcv with time now
+			clock_gettime(CLOCK_MONOTONIC, &now);
+			time = now.tv_sec - hMI1.lastRcv;
+			//printf("Time since last I1 msg: %d\n", time);
+			if(time>timeout){
+				failurecheck = true;
+				failState("I1");
+			}
+			time = now.tv_sec - hMI2.lastRcv;
+			//printf("Time since last I2 msg: %d\n", time);
+			if(time>timeout){
+				failurecheck = true;
+				failState("I2");
+			}
+			time = now.tv_sec - hMX1.lastRcv;
+			if(time>timeout){
+				failurecheck = true;
+				failState("X1");
+			}
+			/*time = now.tv_sec - hMUI.lastRcv;
+			if(time>timeout){
+				failurecheck = true;
+				failState("UI");
+			}*/
+			if(cM.failState == true){
+				if (failurecheck == false){
+					// update nodes that connection reestablished
+					cM.failState = false;
+					printf("Connection re-established!\n");
+					fflush(stdout);
+					ssize_t n = mq_send(mqrI1, (char *)&cM, sizeof(cM), 0);				// Send message
+					if (n == -1) {														// check for error with msg send
+						perror("mq_send");
+					}
+					n = mq_send(mqrI2, (char *)&cM, sizeof(cM), 0);				// Send message
+					if (n == -1) {														// check for error with msg send
+						perror("mq_send");
+					}
+					n = mq_send(mqrX1, (char *)&cM, sizeof(cM), 0);				// Send message
+					if (n == -1) {														// check for error with msg send
+						perror("mq_send");
+					}
+					n = mq_send(mqrUI, (char *)&cM, sizeof(cM), 0);				// Send message
+					if (n == -1) {														// check for error with msg send
+						perror("mq_send");
+					}
+				}
+			}
+		}
+		return EXIT_SUCCESS;
+	}
+	// ------------------------------------------ Main Thread ------------------------------------------ //
+
+	// ################################## //
+	// ############## MAIN ############## //
+	// ################################## //
+	int main(void) {
+		// define this node for sending messages
+			// update message
+		memset(&uM, 0, sizeof(uM)); 						// Clears the array
+		strlcpy(uM.senderID, ID, sizeof(uM.senderID));		// copies string into struct element
+			// reply message
+		memset(&rM, 0, sizeof(rM)); 						// Clears the array
+		strlcpy(rM.senderID, ID, sizeof(rM.senderID));		// copies string into struct element
+			// forward message
+		memset(&fM, 0, sizeof(fM)); 						// Clears the array
+		strlcpy(fM.senderID, ID, sizeof(fM.senderID));		// copies string into struct element
+			// forward message
+		memset(&cM, 0, sizeof(cM)); 						// Clears the array
+		strlcpy(cM.senderID, ID, sizeof(cM.senderID));		// copies string into struct element
+
+		// check communication channel
+		initialiseComChannel();
+
+		// initialise threads (default for now maybe change to round robin later if time)
+		pthread_t sm, hm;
+		pthread_create(&sm,NULL,stateMachine, NULL);
+		pthread_create(&hm,NULL,healthMonitor, NULL);
+
+		while(alive){
+			scanf("%d", &alive);
+		}
+
+		// shutdown
+		mq_unlink(sendMqueueLocation);		// close send queue
+		mq_unlink(I1rcvMqueueLocation);		// close rcv queue for Node I1
+		mq_unlink(I2rcvMqueueLocation);		// close rcv queue for Node I2
+		mq_unlink(X1rcvMqueueLocation);		// close rcv queue for Node X1
+		mq_unlink(UIrcvMqueueLocation);		// close rcv queue for Node UI
+	}

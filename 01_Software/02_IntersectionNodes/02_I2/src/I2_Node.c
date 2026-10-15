@@ -54,8 +54,8 @@ struct updateMsg {				// message that gets sent to control with current status o
 	char senderID[IDBuf];       // our data (unique id from client)
 	int currentState;			// current state of the state machine
 	int timeSinceLastChange;	// time since the state machine last changed state
-	bool carState;				// corresponding car event for each state
-	bool pedState;				// corresponding pedestrian event for each state
+	int carState;				// corresponding car event for each state
+	int pedState;				// corresponding pedestrian event for each state
 	bool trainstate;
 };
 struct updateMsg uM;
@@ -175,31 +175,31 @@ void *sensorProcessing(void *data){																					// allow us to terminate
 			westRtTurnSens = false;
 			southVehSens = false;
 			eastVehSens = false;
-			fM.trainApproach = false;
+			//fM.trainApproach = false;
 		} else if (input == 1){
 			westVehSens = false;
 			westRtTurnSens = true;
 			southVehSens = false;
 			eastVehSens = false;
-			fM.trainApproach = false;
+			//fM.trainApproach = false;
 		} else if (input == 2){
 			westVehSens = false;
 			westRtTurnSens = false;
 			southVehSens = true;
 			eastVehSens = false;
-			fM.trainApproach = false;
+			//fM.trainApproach = false;
 		} else if (input == 3){
 			westVehSens = false;
 			westRtTurnSens = false;
 			southVehSens = false;
 			eastVehSens = true;
-			fM.trainApproach = false;
+			//fM.trainApproach = false;
 		} else if (input == 4){
 			westVehSens = false;
 			westRtTurnSens = false;
 			southVehSens = false;
 			eastVehSens = false;
-			fM.trainApproach = true;
+			//fM.trainApproach = true;
 		} else if (input == 5){
 			westVehSens = false;
 			westRtTurnSens = false;
@@ -259,6 +259,14 @@ void *stateMachine(void *data){
 			sleep(5);
 			curState = nxtState;
 			printAllowed = true;
+		}
+		if(cM.failState){
+			if (curState != State8){
+				printAllowed = true;
+			}
+			curState = State8;
+			nxtState = State8;
+
 		}
 		switch (curState){
 		case State1:
@@ -335,8 +343,13 @@ void *stateMachine(void *data){
 			break;
 		case State8:
 			if(printAllowed){
-				printf("-->Fault detected, flashing red!!!");
+				printf("-->Fault detected, flashing red!!!\n");
+				fflush(stdout);
 				printAllowed = false;
+			}
+			if(cM.failState == false){
+				printf("-->Fault cleared! Resuming normal operation\n");
+				nxtState = State1;
 			}
 			break;
 		}
@@ -362,6 +375,9 @@ void *inputProcessing(void *data){
 				break;
 			case msgfM:
 				// do nothing
+				printf("rcv msg of struct fM by %s\n", fM.senderID);
+				printf("train approach = %d\n", fM.trainApproach);
+				fflush(stdout);
 				msgRcvStruct = nomsg;
 				break;
 			case msgrM:
